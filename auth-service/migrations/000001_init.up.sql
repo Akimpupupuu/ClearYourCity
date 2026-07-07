@@ -1,11 +1,11 @@
-CREATE SCHEMA auth_service;
+CREATE SCHEMA IF NOT EXISTS auth_service;
 
 CREATE TABLE IF NOT EXISTS auth_service.users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     version BIGINT NOT NULL DEFAULT 1,
     full_name VARCHAR(100) NOT NULL CHECK(char_length(full_name) BETWEEN 3 AND 100),
     email VARCHAR(100) NOT NULL UNIQUE CHECK(
-        email ~ '^.+@.+\..+$'
+        email ~ '^[^@\s]+@[^@\s]+\.[^@\s]+$'
         AND
         char_length(email) BETWEEN 5 AND 100
     ),
