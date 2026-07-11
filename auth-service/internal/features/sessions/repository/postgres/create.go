@@ -2,9 +2,16 @@ package sessions_repository
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
+	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
+	"github.com/jackc/pgx/v5/pgconn"
+)
+
+const (
+	pgxViolatesForeignKeyErrorCode = "23503"
 )
 
 func (r *SessionsRepository) CreateSession(ctx context.Context, session core_domain.Session) (core_domain.Session, error) {
@@ -37,10 +44,16 @@ func (r *SessionsRepository) CreateSession(ctx context.Context, session core_dom
 		&sessionModel.CreatedAt,
 		&sessionModel.ExpiresAt,
 	); err != nil {
+		var pgErr *pgconn.PgError
+		if errors.As(err, &pgErr) {
+			if pgErr.Code == pgxViolatesForeignKeyErrorCode {
+				return core_domain.Session{}, fmt.Errorf("%v: user with id = '%d': %w", err, session.UserID, core_errors.ErrNotFound)
+			}
+		}
+
 		return core_domain.Session{}, fmt.Errorf("scan session: %w", err)
 	}
 
 	sessionDomain := DomainFromModel(sessionModel)
-
 	return sessionDomain, nil
 }
