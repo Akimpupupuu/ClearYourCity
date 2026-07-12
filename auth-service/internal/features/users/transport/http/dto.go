@@ -6,22 +6,41 @@ import (
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 )
 
-type ResponseUserDTO struct {
-	ID        int
-	Version   int
-	FullName  string
-	Email     string
-	Password  string
-	CreatedAt time.Time
+type RegisterUserRequest struct {
+	FullName string `json:"full_name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
 }
 
-func DTOFromDomain(domain core_domain.User) ResponseUserDTO {
-	return ResponseUserDTO{
-		ID:        domain.ID,
-		Version:   domain.Version,
-		FullName:  domain.FullName,
-		Email:     domain.Email,
-		Password:  domain.Password,
-		CreatedAt: domain.CreatedAt,
+type ResponseUserDTO struct {
+	ID        int       `json:"id"`
+	Version   int       `json:"version"`
+	FullName  string    `json:"full_name"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type ResponseRegisterDTO struct {
+	AccessToken          string          `json:"access_token"`
+	AccessTokenExpiresAt time.Time       `json:"access_token_expires_at"`
+	User                 ResponseUserDTO `json:"user"`
+}
+
+type ResponseLoginDTO struct {
+	AccessToken          string    `json:"access_token"`
+	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
+}
+
+func RegisterDTOFromDomain(user core_domain.User, accessToken string, accessTokenExpiresAt time.Time) ResponseRegisterDTO {
+	return ResponseRegisterDTO{
+		AccessToken:          accessToken,
+		AccessTokenExpiresAt: accessTokenExpiresAt,
+		User: ResponseUserDTO{
+			ID:        user.ID,
+			Version:   user.Version,
+			FullName:  user.FullName,
+			Email:     user.Email,
+			CreatedAt: user.CreatedAt,
+		},
 	}
 }

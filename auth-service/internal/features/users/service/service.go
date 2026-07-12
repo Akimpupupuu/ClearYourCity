@@ -3,6 +3,7 @@ package users_service
 import (
 	"context"
 
+	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 	sessions_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/service"
 )
 
@@ -12,6 +13,7 @@ type UsersService struct {
 }
 
 type UsersRepository interface {
+	CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
 }
 
 type SessionsService interface {
