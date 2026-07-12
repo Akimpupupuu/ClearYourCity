@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 
-	http_router "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/router"
+	http_router "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/router"
 	"go.uber.org/zap"
 )
 

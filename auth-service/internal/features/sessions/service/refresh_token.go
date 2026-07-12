@@ -13,9 +13,8 @@ import (
 )
 
 func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken string) (SessionServiceResponse, error) {
-	hash := sha256.New()
-	hash.Write([]byte(oldRefreshToken))
-	hashedRefreshToken := hex.EncodeToString(hash.Sum(nil))
+	sum := sha256.Sum256([]byte(oldRefreshToken))
+	hashedRefreshToken := hex.EncodeToString(sum[:])
 
 	session, err := s.sessionsRepository.GetSession(ctx, hashedRefreshToken)
 	if err != nil {
@@ -23,6 +22,18 @@ func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken stri
 			return SessionServiceResponse{}, fmt.Errorf("get session from repository: %v: %w", err, core_errors.ErrUnauthorized)
 		}
 		return SessionServiceResponse{}, fmt.Errorf("get session from repository: %w", err)
+	}
+
+	if session.IsRevoked {
+		err := s.sessionsRepository.RevokeSessions(ctx, session.UserID)
+		if err != nil {
+			return SessionServiceResponse{}, fmt.Errorf("revoke user's session: %w", err)
+		}
+		return SessionServiceResponse{}, fmt.Errorf("detected token reuse: %w", core_errors.ErrUnauthorized)
+	}
+
+	if session.ExpiresAt.Before(time.Now()) {
+		return SessionServiceResponse{}, fmt.Errorf("session expired: %w", core_errors.ErrUnauthorized)
 	}
 
 	if err := s.RevokeSession(ctx, session.ID); err != nil {
@@ -39,9 +50,8 @@ func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken stri
 		return SessionServiceResponse{}, fmt.Errorf("generate refresh token: %w", err)
 	}
 
-	hash.Reset()
-	hash.Write([]byte(refreshToken))
-	hashedRefreshToken = hex.EncodeToString(hash.Sum(nil))
+	sum = sha256.Sum256([]byte(refreshToken))
+	hashedRefreshToken = hex.EncodeToString(sum[:])
 
 	sessionDomain := core_domain.NewSession(
 		refreshClaims.ID,
@@ -52,16 +62,14 @@ func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken stri
 		refreshClaims.ExpiresAt.Time,
 	)
 
-	newSession, err := s.sessionsRepository.CreateSession(ctx, sessionDomain)
-	if err != nil {
+	if err := s.sessionsRepository.CreateSession(ctx, sessionDomain); err != nil {
 		return SessionServiceResponse{}, fmt.Errorf("create new session in repository: %w", err)
 	}
 
 	return SessionServiceResponse{
-		newSession,
-		accessToken,
-		refreshToken,
-		accessClaims.ExpiresAt.Time,
-		refreshClaims.ExpiresAt.Time,
+		AccessToken:           accessToken,
+		RefreshToken:          refreshToken,
+		AccessTokenExpiresAt:  accessClaims.ExpiresAt.Time,
+		RefreshTokenExpiresAt: refreshClaims.ExpiresAt.Time,
 	}, nil
 }

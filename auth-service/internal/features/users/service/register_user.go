@@ -11,7 +11,6 @@ import (
 
 type RegisterServiceResponse struct {
 	User                  core_domain.User
-	Session               core_domain.Session
 	AccessToken           string
 	RefreshToken          string
 	AccessTokenExpiresAt  time.Time
@@ -38,18 +37,12 @@ func (s *UsersService) RegisterUser(ctx context.Context, cmd core_domain.Registe
 	sessionServiceResponse, err := s.sessionsService.CreateSession(ctx, user.ID)
 	if err != nil {
 		return RegisterServiceResponse{
-			User:                  user,
-			Session:               core_domain.Session{},
-			AccessToken:           "",
-			RefreshToken:          "",
-			AccessTokenExpiresAt:  time.Time{},
-			RefreshTokenExpiresAt: time.Time{},
+			User: user,
 		}, fmt.Errorf("create session: %w", err)
 	}
 
 	return RegisterServiceResponse{
 		User:                  user,
-		Session:               sessionServiceResponse.Session,
 		AccessToken:           sessionServiceResponse.AccessToken,
 		RefreshToken:          sessionServiceResponse.RefreshToken,
 		AccessTokenExpiresAt:  sessionServiceResponse.AccessTokenExpiresAt,

@@ -5,6 +5,7 @@ import (
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 	users_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/service"
+	"github.com/go-chi/chi"
 )
 
 type UsersHandler struct {
@@ -19,4 +20,10 @@ func NewUsersHandler(usersService UsersService) *UsersHandler {
 	return &UsersHandler{
 		usersService: usersService,
 	}
+}
+
+func (h *UsersHandler) Register(r chi.Router) {
+	r.Route("/auth", func(r chi.Router) {
+		r.Post("/register", h.RegisterUser)
+	})
 }

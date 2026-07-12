@@ -1,4 +1,4 @@
-package users_postrges_repository
+package users_repository
 
 import (
 	"context"

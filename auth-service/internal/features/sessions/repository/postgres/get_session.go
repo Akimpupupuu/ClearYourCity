@@ -17,7 +17,7 @@ func (r *SessionsRepository) GetSession(ctx context.Context, oldHashedToken stri
 	query := `
 	SELECT id, user_id, refresh_token_hash, is_revoked, created_at, expires_at
 	FROM auth_service.sessions
-	WHERE refresh_token_hash = $1 AND is_revoked = false AND expires_at > NOW();
+	WHERE refresh_token_hash = $1;
 	`
 
 	row := r.pool.QueryRow(ctx, query, oldHashedToken)

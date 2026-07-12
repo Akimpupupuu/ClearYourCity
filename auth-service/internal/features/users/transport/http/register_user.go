@@ -7,11 +7,17 @@ import (
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
-	http_request "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/request"
-	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/response"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
+	http_request "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/request"
+	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
 	"go.uber.org/zap"
 )
+
+type RegisterUserRequest struct {
+	FullName string `json:"full_name" validate:"required,min=3,max=100"`
+	Email    string `json:"email" validate:"required,min=5,max=100"`
+	Password string `json:"password" validate:"required,min=8"`
+}
 
 type RegisterResponse ResponseRegisterDTO
 
@@ -20,10 +26,9 @@ func (h *UsersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)
 
-	// make validation incoming HTTP request
 	var request RegisterUserRequest
-	if err := http_request.Decode(r, &request); err != nil {
-		responseHandler.ErrorResponse(err, "failed to decode HTTP request")
+	if err := http_request.DecodeAndValidate(r, &request); err != nil {
+		responseHandler.ErrorResponse(err, "failed to decode and validate HTTP request")
 		return
 	}
 
@@ -44,7 +49,6 @@ func (h *UsersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 			)
 
 			response := RegisterResponse(RegisterDTOFromDomain(serviceResponse.User, "", time.Time{}))
-
 			responseHandler.JsonResponse(response, http.StatusAccepted)
 			return
 		}

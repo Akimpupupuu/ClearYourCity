@@ -6,16 +6,25 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
-	http_router "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/router"
-	http_server "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/server"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
 	core_postgres_pool "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/pool"
+	http_router "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/router"
+	http_server "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/server"
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
+	sessions_repository "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/repository/postgres"
+	sessions_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/service"
+	users_repository "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/repository/postgres"
+	users_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/service"
+	users_transport_http "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/transport/http"
+	"github.com/go-chi/chi"
 	"go.uber.org/zap"
 )
 
 func main() {
+	time.Local = time.UTC
+
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
@@ -36,13 +45,20 @@ func main() {
 	logger.Debug("initializing token generator")
 	tokenGenerator := sessions_jwt.NewTokenGenerator(sessions_jwt.NewConfigMust())
 
-	// repo level
-	// service level
-	// transport level
+	logger.Debug("initializing sessions feature")
+	sessionsRepository := sessions_repository.NewSessionsRepository(pool)
+	sessionsService := sessions_service.NewSessionsService(sessionsRepository, tokenGenerator)
+
+	logger.Debug("initializing sessions feature")
+	usersRepository := users_repository.NewUsersRepository(pool)
+	usersService := users_service.NewUsersService(usersRepository, sessionsService)
+	usersTransportHTTP := users_transport_http.NewUsersHandler(usersService)
 
 	logger.Debug("initializing router")
-	router := http_router.NewRouter(logger, tokenGenerator)
-	router.RegisterRoutes()
+	router := http_router.NewRouter(logger)
+	router.RouteApi("v1", func(apiRouter chi.Router) {
+		usersTransportHTTP.Register(apiRouter)
+	})
 
 	logger.Debug("initializing HTTP Server")
 	server := http_server.NewHTTPServer(router, http_server.NewConfigMust(), logger)

@@ -6,12 +6,6 @@ import (
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 )
 
-type RegisterUserRequest struct {
-	FullName string `json:"full_name"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
 type ResponseUserDTO struct {
 	ID        int       `json:"id"`
 	Version   int       `json:"version"`

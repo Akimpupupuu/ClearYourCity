@@ -21,9 +21,8 @@ func (s *SessionsService) CreateSession(ctx context.Context, userID int) (Sessio
 		return SessionServiceResponse{}, fmt.Errorf("create refresh token: %w", err)
 	}
 
-	hash := sha256.New()
-	hash.Write([]byte(refreshToken))
-	hashedRefreshToken := hex.EncodeToString(hash.Sum(nil))
+	sum := sha256.Sum256([]byte(refreshToken))
+	hashedRefreshToken := hex.EncodeToString(sum[:])
 
 	sessionDomain := core_domain.NewSession(
 		refreshClaims.ID,
@@ -34,16 +33,14 @@ func (s *SessionsService) CreateSession(ctx context.Context, userID int) (Sessio
 		refreshClaims.ExpiresAt.Time,
 	)
 
-	session, err := s.sessionsRepository.CreateSession(ctx, sessionDomain)
-	if err != nil {
+	if err := s.sessionsRepository.CreateSession(ctx, sessionDomain); err != nil {
 		return SessionServiceResponse{}, fmt.Errorf("create session in repository: %w", err)
 	}
 
 	return SessionServiceResponse{
-		session,
-		accessToken,
-		refreshToken,
-		accessClaims.ExpiresAt.Time,
-		refreshClaims.ExpiresAt.Time,
+		AccessToken:           accessToken,
+		RefreshToken:          refreshToken,
+		AccessTokenExpiresAt:  accessClaims.ExpiresAt.Time,
+		RefreshTokenExpiresAt: refreshClaims.ExpiresAt.Time,
 	}, nil
 }

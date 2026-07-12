@@ -7,8 +7,8 @@ import (
 	"time"
 
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
-	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/http/response"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
+	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 	"github.com/google/uuid"
 	"go.uber.org/zap"

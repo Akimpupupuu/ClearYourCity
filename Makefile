@@ -1,4 +1,4 @@
-include .env
+include auth-service/.env
 export
 
 export PROJECT_ROOT=$(shell pwd)
@@ -23,11 +23,14 @@ migrate-create:
 migrate-up:
 	@docker compose run --rm auth-migrate \
 	-path /migrations \
-	-database postgres://${POSTGRES_AUTH_USER}:${POSTGRES_AUTH_PASSWORD}@auth-service-postgres:5432/${POSTGRES_AUTH_DB}?sslmode=disable \
+	-database postgres://${AUTH_POSTGRES_USER}:${AUTH_POSTGRES_PASSWORD}@auth-service-postgres:5432/${AUTH_POSTGRES_DB}?sslmode=disable \
 	up
 
 migrate-down:
 	@docker compose run --rm auth-migrate \
 	-path /migrations \
-	-database postgres://${POSTGRES_AUTH_USER}:${POSTGRES_AUTH_PASSWORD}@auth-service-postgres:5432/${POSTGRES_AUTH_DB}?sslmode=disable \
+	-database postgres://${AUTH_POSTGRES_USER}:${AUTH_POSTGRES_PASSWORD}@auth-service-postgres:5432/${AUTH_POSTGRES_DB}?sslmode=disable \
 	down
+
+auth-run:
+	@ cd auth-service && go run cmd/auth/main.go
