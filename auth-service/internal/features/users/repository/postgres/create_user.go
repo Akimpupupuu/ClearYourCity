@@ -45,14 +45,6 @@ func (r *UsersRepository) CreateUser(ctx context.Context, user core_domain.User)
 		return core_domain.User{}, fmt.Errorf("scan error: %w", err)
 	}
 
-	userDomain := core_domain.NewUser(
-		usersModel.ID,
-		usersModel.Version,
-		usersModel.FullName,
-		usersModel.Email,
-		usersModel.HashedPassword,
-		usersModel.CreatedAt,
-	)
-
+	userDomain := DomainFromModel(usersModel)
 	return userDomain, nil
 }

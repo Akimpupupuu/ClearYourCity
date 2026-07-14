@@ -25,7 +25,7 @@ type ResponseLoginDTO struct {
 	AccessTokenExpiresAt time.Time `json:"access_token_expires_at"`
 }
 
-func RegisterDTOFromDomain(user core_domain.User, accessToken string, accessTokenExpiresAt time.Time) ResponseRegisterDTO {
+func RegisterDTOFromService(user core_domain.User, accessToken string, accessTokenExpiresAt time.Time) ResponseRegisterDTO {
 	return ResponseRegisterDTO{
 		AccessToken:          accessToken,
 		AccessTokenExpiresAt: accessTokenExpiresAt,
@@ -36,5 +36,12 @@ func RegisterDTOFromDomain(user core_domain.User, accessToken string, accessToke
 			Email:     user.Email,
 			CreatedAt: user.CreatedAt,
 		},
+	}
+}
+
+func LoginDTOFromService(accessToken string, accessTokenExpiresAt time.Time) ResponseLoginDTO {
+	return ResponseLoginDTO{
+		AccessToken:          accessToken,
+		AccessTokenExpiresAt: accessTokenExpiresAt,
 	}
 }

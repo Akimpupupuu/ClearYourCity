@@ -29,6 +29,11 @@ type RegisterCommand struct {
 	Password string
 }
 
+type LoginCommand struct {
+	Email    string
+	Password string
+}
+
 func NewUser(
 	id int,
 	version int,
@@ -58,9 +63,16 @@ func NewUserUninitialized(fullName string, email string, hashedPassword string) 
 	}
 }
 
-func NewCommand(fullName string, email string, password string) RegisterCommand {
+func NewRegisterCommand(fullName string, email string, password string) RegisterCommand {
 	return RegisterCommand{
 		FullName: fullName,
+		Email:    email,
+		Password: password,
+	}
+}
+
+func NewLoginCommand(email string, password string) LoginCommand {
+	return LoginCommand{
 		Email:    email,
 		Password: password,
 	}

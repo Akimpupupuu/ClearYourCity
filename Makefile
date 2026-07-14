@@ -33,4 +33,4 @@ migrate-down:
 	down
 
 auth-run:
-	@ cd auth-service && go run cmd/auth/main.go
+	@cd auth-service && go run cmd/auth/main.go

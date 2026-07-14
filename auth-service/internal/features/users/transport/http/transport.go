@@ -14,6 +14,7 @@ type UsersHandler struct {
 
 type UsersService interface {
 	RegisterUser(ctx context.Context, cmd core_domain.RegisterCommand) (users_service.RegisterServiceResponse, error)
+	LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (users_service.LoginServiceResponse, error)
 }
 
 func NewUsersHandler(usersService UsersService) *UsersHandler {
@@ -25,5 +26,6 @@ func NewUsersHandler(usersService UsersService) *UsersHandler {
 func (h *UsersHandler) Register(r chi.Router) {
 	r.Route("/auth", func(r chi.Router) {
 		r.Post("/register", h.RegisterUser)
+		r.Post("/login", h.LoginUser)
 	})
 }

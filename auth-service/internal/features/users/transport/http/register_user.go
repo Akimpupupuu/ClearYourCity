@@ -32,9 +32,9 @@ func (h *UsersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userCommand := CommandFromDTO(request)
+	registerCommand := registerCommandFromDTO(request)
 
-	serviceResponse, err := h.usersService.RegisterUser(ctx, userCommand)
+	serviceResponse, err := h.usersService.RegisterUser(ctx, registerCommand)
 	if err != nil {
 		if errors.Is(err, core_errors.ErrConflict) {
 			responseHandler.ErrorResponse(err, "failed to create user")
@@ -48,7 +48,7 @@ func (h *UsersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 				zap.Any("user_id", serviceResponse.User.ID),
 			)
 
-			response := RegisterResponse(RegisterDTOFromDomain(serviceResponse.User, "", time.Time{}))
+			response := RegisterResponse(RegisterDTOFromService(serviceResponse.User, "", time.Time{}))
 			responseHandler.JsonResponse(response, http.StatusAccepted)
 			return
 		}
@@ -66,10 +66,10 @@ func (h *UsersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 		Path:     "/api/v1/auth",
 	})
 
-	response := RegisterResponse(RegisterDTOFromDomain(serviceResponse.User, serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt))
+	response := RegisterResponse(RegisterDTOFromService(serviceResponse.User, serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt))
 	responseHandler.JsonResponse(response, http.StatusCreated)
 }
 
-func CommandFromDTO(request RegisterUserRequest) core_domain.RegisterCommand {
-	return core_domain.NewCommand(request.FullName, request.Email, request.Password)
+func registerCommandFromDTO(request RegisterUserRequest) core_domain.RegisterCommand {
+	return core_domain.NewRegisterCommand(request.FullName, request.Email, request.Password)
 }
