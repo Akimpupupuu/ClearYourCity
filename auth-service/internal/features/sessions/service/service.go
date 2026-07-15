@@ -14,7 +14,7 @@ type SessionsService struct {
 
 type SessionsRepository interface {
 	CreateSession(ctx context.Context, session core_domain.Session) error
-	RevokeSession(ctx context.Context, tokenID string) error
+	RevokeSession(ctx context.Context, hashedRefreshToken string) error
 	RevokeSessions(ctx context.Context, userID int) error
 	GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error)
 }

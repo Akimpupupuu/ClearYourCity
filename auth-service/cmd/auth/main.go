@@ -52,7 +52,7 @@ func main() {
 	logger.Debug("initializing sessions feature")
 	usersRepository := users_repository.NewUsersRepository(pool)
 	usersService := users_service.NewUsersService(usersRepository, sessionsService)
-	usersTransportHTTP := users_transport_http.NewUsersHandler(usersService)
+	usersTransportHTTP := users_transport_http.NewUsersHandler(usersService, tokenGenerator)
 
 	logger.Debug("initializing router")
 	router := http_router.NewRouter(logger)

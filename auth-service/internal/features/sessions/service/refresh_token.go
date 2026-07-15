@@ -36,7 +36,7 @@ func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken stri
 		return SessionServiceResponse{}, fmt.Errorf("session expired: %w", core_errors.ErrUnauthorized)
 	}
 
-	if err := s.RevokeSession(ctx, session.ID); err != nil {
+	if err := s.sessionsRepository.RevokeSession(ctx, hashedRefreshToken); err != nil {
 		return SessionServiceResponse{}, fmt.Errorf("revoke session: %w", err)
 	}
 
