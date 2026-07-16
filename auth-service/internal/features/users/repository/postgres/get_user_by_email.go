@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *UsersRepository) GetUser(ctx context.Context, email string) (core_domain.User, error) {
+func (r *UsersRepository) GetUserByEmail(ctx context.Context, email string) (core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 

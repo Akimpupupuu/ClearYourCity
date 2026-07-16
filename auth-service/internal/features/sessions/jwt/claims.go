@@ -35,3 +35,8 @@ func NewUserClaims(userID int, duration time.Duration) (*UserClaims, error) {
 func ToContext(ctx context.Context, claims *UserClaims) context.Context {
 	return context.WithValue(ctx, claimsKey{}, claims)
 }
+
+func FromContext(ctx context.Context) (*UserClaims, bool) {
+	claims, ok := ctx.Value(claimsKey{}).(*UserClaims)
+	return claims, ok
+}

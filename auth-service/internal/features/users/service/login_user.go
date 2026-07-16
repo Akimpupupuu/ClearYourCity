@@ -19,7 +19,7 @@ type LoginServiceResponse struct {
 }
 
 func (s *UsersService) LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (LoginServiceResponse, error) {
-	user, err := s.usersRepository.GetUser(ctx, loginCommand.Email)
+	user, err := s.usersRepository.GetUserByEmail(ctx, loginCommand.Email)
 	if err != nil {
 		if errors.Is(err, core_errors.ErrNotFound) {
 			return LoginServiceResponse{}, fmt.Errorf("user authentication failed: %w", core_errors.ErrUnauthorized)
