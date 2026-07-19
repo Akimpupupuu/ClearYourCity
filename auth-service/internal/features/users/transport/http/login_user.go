@@ -18,7 +18,7 @@ type LoginRequest struct {
 
 type LoginResponse ResponseLoginDTO
 
-func (h *UsersHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
+func (h *usersHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)

@@ -18,7 +18,7 @@ type LoginServiceResponse struct {
 	RefreshTokenExpiresAt time.Time
 }
 
-func (s *UsersService) LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (LoginServiceResponse, error) {
+func (s *usersService) LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (LoginServiceResponse, error) {
 	user, err := s.usersRepository.GetUserByEmail(ctx, loginCommand.Email)
 	if err != nil {
 		if errors.Is(err, core_errors.ErrNotFound) {

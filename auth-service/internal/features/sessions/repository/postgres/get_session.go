@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *SessionsRepository) GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error) {
+func (r *sessionsRepository) GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 

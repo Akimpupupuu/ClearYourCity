@@ -23,25 +23,7 @@ type User struct {
 	CreatedAt      time.Time
 }
 
-type RegisterCommand struct {
-	FullName string
-	Email    string
-	Password string
-}
-
-type LoginCommand struct {
-	Email    string
-	Password string
-}
-
-func NewUser(
-	id int,
-	version int,
-	fullName string,
-	email string,
-	hashedPassword string,
-	createdAt time.Time,
-) User {
+func NewUser(id int, version int, fullName string, email string, hashedPassword string, createdAt time.Time) User {
 	return User{
 		ID:             id,
 		Version:        version,
@@ -63,39 +45,38 @@ func NewUserUninitialized(fullName string, email string, hashedPassword string) 
 	}
 }
 
-func NewRegisterCommand(fullName string, email string, password string) RegisterCommand {
-	return RegisterCommand{
-		FullName: fullName,
-		Email:    email,
-		Password: password,
+func (u *User) ApplyPatch(fullName *string, email *string) error {
+	tmp := *u
+
+	if fullName != nil {
+		tmp.FullName = *fullName
 	}
+
+	if email != nil {
+		tmp.Email = *email
+	}
+
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("validate user: %w", err)
+	}
+
+	*u = tmp
+	return nil
 }
 
-func NewLoginCommand(email string, password string) LoginCommand {
-	return LoginCommand{
-		Email:    email,
-		Password: password,
-	}
-}
-
-func (c *RegisterCommand) Validate() error {
-	fullNameLength := len([]rune(c.FullName))
+func (u *User) Validate() error {
+	fullNameLength := len([]rune(u.FullName))
 	if fullNameLength < 3 || fullNameLength > 100 {
 		return fmt.Errorf("invalid 'fullName' length: %d: %w", fullNameLength, core_errors.ErrInvalidArgument)
 	}
 
-	emailLength := len(c.Email)
+	emailLength := len(u.Email)
 	if emailLength < 5 || emailLength > 100 {
 		return fmt.Errorf("invalid 'email' length: %d: %w", emailLength, core_errors.ErrInvalidArgument)
 	}
 
-	if !RegularExpression.MatchString(c.Email) {
+	if !RegularExpression.MatchString(u.Email) {
 		return fmt.Errorf("invalid 'email' format: %w", core_errors.ErrInvalidArgument)
-	}
-
-	passwordLength := len([]rune(c.Password))
-	if passwordLength < 8 {
-		return fmt.Errorf("invalid 'password' length: %w", core_errors.ErrInvalidArgument)
 	}
 
 	return nil

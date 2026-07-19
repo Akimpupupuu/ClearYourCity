@@ -10,7 +10,7 @@ import (
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 )
 
-func (s *SessionsService) CreateSession(ctx context.Context, userID int) (SessionServiceResponse, error) {
+func (s *sessionsService) CreateSession(ctx context.Context, userID int) (SessionServiceResponse, error) {
 	accessToken, accessClaims, err := s.tokenGenerator.GenerateToken(userID, time.Minute*15)
 	if err != nil {
 		return SessionServiceResponse{}, fmt.Errorf("create access token: %w", err)

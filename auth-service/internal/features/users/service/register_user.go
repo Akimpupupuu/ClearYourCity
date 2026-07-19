@@ -17,7 +17,7 @@ type RegisterServiceResponse struct {
 	RefreshTokenExpiresAt time.Time
 }
 
-func (s *UsersService) RegisterUser(ctx context.Context, cmd core_domain.RegisterCommand) (RegisterServiceResponse, error) {
+func (s *usersService) RegisterUser(ctx context.Context, cmd core_domain.RegisterCommand) (RegisterServiceResponse, error) {
 	if err := cmd.Validate(); err != nil {
 		return RegisterServiceResponse{}, fmt.Errorf("validate user: %w", err)
 	}

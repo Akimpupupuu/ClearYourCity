@@ -7,7 +7,7 @@ import (
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 )
 
-type SessionsService struct {
+type sessionsService struct {
 	sessionsRepository SessionsRepository
 	tokenGenerator     *sessions_jwt.TokenGenerator
 }
@@ -19,8 +19,8 @@ type SessionsRepository interface {
 	GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error)
 }
 
-func NewSessionsService(sessionsRepository SessionsRepository, tokenGenerator *sessions_jwt.TokenGenerator) *SessionsService {
-	return &SessionsService{
+func NewSessionsService(sessionsRepository SessionsRepository, tokenGenerator *sessions_jwt.TokenGenerator) *sessionsService {
+	return &sessionsService{
 		sessionsRepository: sessionsRepository,
 		tokenGenerator:     tokenGenerator,
 	}

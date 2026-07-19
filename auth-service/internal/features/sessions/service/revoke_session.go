@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-func (s *SessionsService) RevokeSession(ctx context.Context, refreshToken string) error {
+func (s *sessionsService) RevokeSession(ctx context.Context, refreshToken string) error {
 	sum := sha256.Sum256([]byte(refreshToken))
 	hashedRefreshToken := hex.EncodeToString(sum[:])
 

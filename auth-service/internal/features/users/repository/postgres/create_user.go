@@ -14,7 +14,7 @@ const (
 	pgxViolatesUniqueErrorCode = "23505"
 )
 
-func (r *UsersRepository) CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error) {
+func (r *usersRepository) CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 

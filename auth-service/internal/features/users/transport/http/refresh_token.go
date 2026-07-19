@@ -10,7 +10,7 @@ import (
 	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
 )
 
-func (h *UsersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+func (h *usersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)

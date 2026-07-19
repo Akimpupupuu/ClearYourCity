@@ -7,7 +7,7 @@ import (
 	sessions_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/service"
 )
 
-type UsersService struct {
+type usersService struct {
 	usersRepository UsersRepository
 	sessionsService SessionsService
 }
@@ -16,6 +16,8 @@ type UsersRepository interface {
 	CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
 	GetUserByEmail(ctx context.Context, email string) (core_domain.User, error)
 	GetUserByID(ctx context.Context, userID int) (core_domain.User, error)
+	PatchPassword(ctx context.Context, user core_domain.User) error
+	PatchUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
 }
 
 type SessionsService interface {
@@ -25,8 +27,8 @@ type SessionsService interface {
 	RevokeSessions(ctx context.Context, userID int) error
 }
 
-func NewUsersService(usersRepository UsersRepository, sessionsService SessionsService) *UsersService {
-	return &UsersService{
+func NewUsersService(usersRepository UsersRepository, sessionsService SessionsService) *usersService {
+	return &usersService{
 		usersRepository: usersRepository,
 		sessionsService: sessionsService,
 	}

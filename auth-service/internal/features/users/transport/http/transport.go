@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-type UsersHandler struct {
+type usersHandler struct {
 	usersService   UsersService
 	tokenGenerator *sessions_jwt.TokenGenerator
 }
@@ -21,19 +21,18 @@ type UsersService interface {
 	LogoutUser(ctx context.Context, refreshToken string) error
 	RefreshToken(ctx context.Context, refreshToken string) (users_service.RefreshTokenServiceResponse, error)
 	GetUser(ctx context.Context, userID int) (core_domain.User, error)
-	// PatchUser()
-	// PatchEmail()
-	// PatchPassword()
+	PatchUser(ctx context.Context, fullName *string, email *string) (core_domain.User, error)
+	PatchPassword(ctx context.Context, oldPassword string, newPassword string) error
 }
 
-func NewUsersHandler(usersService UsersService, tokenGenerator *sessions_jwt.TokenGenerator) *UsersHandler {
-	return &UsersHandler{
+func NewUsersHandler(usersService UsersService, tokenGenerator *sessions_jwt.TokenGenerator) *usersHandler {
+	return &usersHandler{
 		usersService:   usersService,
 		tokenGenerator: tokenGenerator,
 	}
 }
 
-func (h *UsersHandler) Register(router chi.Router) {
+func (h *usersHandler) Register(router chi.Router) {
 	router.Route("/auth", func(subRouter chi.Router) {
 		subRouter.Post("/register", h.RegisterUser)
 		subRouter.Post("/login", h.LoginUser)
@@ -44,6 +43,8 @@ func (h *UsersHandler) Register(router chi.Router) {
 			protected_router.Use(http_middleware.Auth(h.tokenGenerator))
 
 			protected_router.Get("/get", h.GetUser)
+			protected_router.Patch("/patch_password", h.PatchPassword)
+			protected_router.Patch("/patch_user", h.PatchUser)
 		})
 	})
 }

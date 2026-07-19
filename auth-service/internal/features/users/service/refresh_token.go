@@ -7,7 +7,7 @@ import (
 
 type RefreshTokenServiceResponse LoginServiceResponse
 
-func (s *UsersService) RefreshToken(ctx context.Context, refreshToken string) (RefreshTokenServiceResponse, error) {
+func (s *usersService) RefreshToken(ctx context.Context, refreshToken string) (RefreshTokenServiceResponse, error) {
 	sessionServiceResponse, err := s.sessionsService.RefreshToken(ctx, refreshToken)
 	if err != nil {
 		return RefreshTokenServiceResponse{}, fmt.Errorf("refresh token: %w", err)

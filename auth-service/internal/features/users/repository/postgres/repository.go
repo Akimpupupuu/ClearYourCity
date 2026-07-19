@@ -4,12 +4,12 @@ import (
 	core_postgres_pool "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/pool"
 )
 
-type UsersRepository struct {
+type usersRepository struct {
 	pool *core_postgres_pool.Pool
 }
 
-func NewUsersRepository(pool *core_postgres_pool.Pool) *UsersRepository {
-	return &UsersRepository{
+func NewUsersRepository(pool *core_postgres_pool.Pool) *usersRepository {
+	return &usersRepository{
 		pool: pool,
 	}
 }

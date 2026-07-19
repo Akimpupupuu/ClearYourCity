@@ -14,7 +14,7 @@ const (
 	pgxViolatesForeignKeyErrorCode = "23503"
 )
 
-func (r *SessionsRepository) CreateSession(ctx context.Context, session core_domain.Session) error {
+func (r *sessionsRepository) CreateSession(ctx context.Context, session core_domain.Session) error {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 

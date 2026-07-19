@@ -1,6 +1,7 @@
 package users_transport_http
 
 import (
+	"errors"
 	"net/http"
 
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
@@ -9,7 +10,7 @@ import (
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 )
 
-func (h *UsersHandler) GetUser(w http.ResponseWriter, r *http.Request) {
+func (h *usersHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)
@@ -22,6 +23,19 @@ func (h *UsersHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	userDomain, err := h.usersService.GetUser(ctx, userClaims.UserID)
 	if err != nil {
+		if errors.Is(err, core_errors.ErrUnauthorized) {
+			http.SetCookie(w, &http.Cookie{
+				Name:     "refresh_token",
+				Value:    "",
+				MaxAge:   -1,
+				HttpOnly: true,
+				Secure:   true,
+				Path:     "/api/v1/auth",
+			})
+
+			responseHandler.ErrorResponse(err, "failed to get user")
+			return
+		}
 		responseHandler.ErrorResponse(err, "failed to get user")
 		return
 	}

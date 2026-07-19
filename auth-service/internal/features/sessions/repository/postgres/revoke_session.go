@@ -5,7 +5,7 @@ import (
 	"fmt"
 )
 
-func (r *SessionsRepository) RevokeSession(ctx context.Context, hashedRefreshToken string) error {
+func (r *sessionsRepository) RevokeSession(ctx context.Context, hashedRefreshToken string) error {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 

@@ -12,7 +12,7 @@ import (
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
 )
 
-func (s *SessionsService) RefreshToken(ctx context.Context, oldRefreshToken string) (SessionServiceResponse, error) {
+func (s *sessionsService) RefreshToken(ctx context.Context, oldRefreshToken string) (SessionServiceResponse, error) {
 	sum := sha256.Sum256([]byte(oldRefreshToken))
 	hashedRefreshToken := hex.EncodeToString(sum[:])
 
