@@ -16,13 +16,13 @@ type usersHandler struct {
 }
 
 type UsersService interface {
-	RegisterUser(ctx context.Context, cmd core_domain.RegisterCommand) (users_service.RegisterServiceResponse, error)
+	RegisterUser(ctx context.Context, registerCommand core_domain.RegisterCommand) (users_service.RegisterServiceResponse, error)
 	LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (users_service.LoginServiceResponse, error)
 	LogoutUser(ctx context.Context, refreshToken string) error
 	RefreshToken(ctx context.Context, refreshToken string) (users_service.RefreshTokenServiceResponse, error)
 	GetUser(ctx context.Context, userID int) (core_domain.User, error)
-	PatchUser(ctx context.Context, fullName *string, email *string) (core_domain.User, error)
-	PatchPassword(ctx context.Context, oldPassword string, newPassword string) error
+	PatchUser(ctx context.Context, patchUserCommand core_domain.PatchUserCommand) (core_domain.User, error)
+	PatchPassword(ctx context.Context, patchPasswordCommand core_domain.PatchPasswordCommand) error
 }
 
 func NewUsersHandler(usersService UsersService, tokenGenerator *sessions_jwt.TokenGenerator) *usersHandler {

@@ -17,17 +17,17 @@ type RegisterServiceResponse struct {
 	RefreshTokenExpiresAt time.Time
 }
 
-func (s *usersService) RegisterUser(ctx context.Context, cmd core_domain.RegisterCommand) (RegisterServiceResponse, error) {
-	if err := cmd.Validate(); err != nil {
+func (s *usersService) RegisterUser(ctx context.Context, registerCommand core_domain.RegisterCommand) (RegisterServiceResponse, error) {
+	if err := registerCommand.Validate(); err != nil {
 		return RegisterServiceResponse{}, fmt.Errorf("validate user: %w", err)
 	}
 
-	hashedPassword, err := users_password.HashPassword(cmd.Password)
+	hashedPassword, err := users_password.HashPassword(registerCommand.Password)
 	if err != nil {
 		return RegisterServiceResponse{}, fmt.Errorf("hash password: %w", err)
 	}
 
-	userDomain := core_domain.NewUserUninitialized(cmd.FullName, cmd.Email, hashedPassword)
+	userDomain := core_domain.NewUserUninitialized(registerCommand.FullName, registerCommand.Email, hashedPassword)
 
 	user, err := s.usersRepository.CreateUser(ctx, userDomain)
 	if err != nil {

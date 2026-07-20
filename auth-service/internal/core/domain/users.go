@@ -2,7 +2,6 @@ package core_domain
 
 import (
 	"fmt"
-	"regexp"
 	"time"
 
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
@@ -11,7 +10,6 @@ import (
 var (
 	UninitializedID      = -1
 	UninitializedVersion = -1
-	RegularExpression    = regexp.MustCompile(`^[^@\s]+@[^@\s]+\.[^@\s]+$`)
 )
 
 type User struct {

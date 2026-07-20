@@ -19,6 +19,10 @@ type LoginServiceResponse struct {
 }
 
 func (s *usersService) LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (LoginServiceResponse, error) {
+	if err := loginCommand.Validate(); err != nil {
+		return LoginServiceResponse{}, fmt.Errorf("validate request: %w", err)
+	}
+
 	user, err := s.usersRepository.GetUserByEmail(ctx, loginCommand.Email)
 	if err != nil {
 		if errors.Is(err, core_errors.ErrNotFound) {

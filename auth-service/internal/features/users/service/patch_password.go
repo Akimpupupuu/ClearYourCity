@@ -5,14 +5,15 @@ import (
 	"errors"
 	"fmt"
 
+	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 	users_password "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/password"
 )
 
-func (s *usersService) PatchPassword(ctx context.Context, oldPassword string, newPassword string) error {
-	if err := validatePassword(newPassword); err != nil {
-		return fmt.Errorf("validate password: %w", err)
+func (s *usersService) PatchPassword(ctx context.Context, patchPasswordCommand core_domain.PatchPasswordCommand) error {
+	if err := patchPasswordCommand.Validate(); err != nil {
+		return fmt.Errorf("validate 'patchPasswordCommand': %w", err)
 	}
 
 	claims, ok := sessions_jwt.FromContext(ctx)
@@ -29,11 +30,11 @@ func (s *usersService) PatchPassword(ctx context.Context, oldPassword string, ne
 		return fmt.Errorf("get user from repository: %w", err)
 	}
 
-	if err := users_password.VerifyPassword(user.HashedPassword, oldPassword); err != nil {
+	if err := users_password.VerifyPassword(user.HashedPassword, patchPasswordCommand.OldPassword); err != nil {
 		return fmt.Errorf("user authentication failed: %w", core_errors.ErrUnauthorized)
 	}
 
-	hashedNewPassword, err := users_password.HashPassword(newPassword)
+	hashedNewPassword, err := users_password.HashPassword(patchPasswordCommand.NewPassword)
 	if err != nil {
 		return fmt.Errorf("hash password: %w", err)
 	}
@@ -46,15 +47,6 @@ func (s *usersService) PatchPassword(ctx context.Context, oldPassword string, ne
 
 	if err := s.sessionsService.RevokeSessions(ctx, claims.UserID); err != nil {
 		return fmt.Errorf("revoke sessions: %w", err)
-	}
-
-	return nil
-}
-
-func validatePassword(password string) error {
-	passwordLength := len([]rune(password))
-	if passwordLength < 8 {
-		return fmt.Errorf("invalid password length: %d: %w", passwordLength, core_errors.ErrInvalidArgument)
 	}
 
 	return nil
