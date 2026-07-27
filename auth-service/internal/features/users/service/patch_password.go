@@ -41,12 +41,18 @@ func (s *usersService) PatchPassword(ctx context.Context, patchPasswordCommand c
 
 	user.HashedPassword = hashedNewPassword
 
-	if err := s.usersRepository.PatchPassword(ctx, user); err != nil {
-		return fmt.Errorf("patch password in repository: %w", err)
-	}
+	if err = s.transactionManager.WithTransaction(ctx, func(txCtx context.Context) error {
+		if err := s.usersRepository.PatchPassword(txCtx, user); err != nil {
+			return fmt.Errorf("patch password in repository: %w", err)
+		}
 
-	if err := s.sessionsService.RevokeSessions(ctx, claims.UserID); err != nil {
-		return fmt.Errorf("revoke sessions: %w", err)
+		if err := s.sessionsService.RevokeSessions(txCtx, claims.UserID); err != nil {
+			return fmt.Errorf("revoke sessions: %w", err)
+		}
+
+		return nil
+	}); err != nil {
+		return fmt.Errorf("transaction error: %w", err)
 	}
 
 	return nil

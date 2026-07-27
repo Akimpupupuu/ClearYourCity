@@ -10,6 +10,7 @@ import (
 
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
 	core_postgres_pool "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/pool"
+	core_postgres_transaction "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/transaction"
 	http_router "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/router"
 	http_server "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/server"
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
@@ -42,16 +43,21 @@ func main() {
 	if err != nil {
 		logger.Fatal("failed to init postgres connection pool", zap.Error(err))
 	}
+	defer pool.Close()
+
+	logger.Debug("initializing transaction manager")
+	transactionManager := core_postgres_transaction.NewTransactionManager(pool.Pool)
+
 	logger.Debug("initializing token generator")
 	tokenGenerator := sessions_jwt.NewTokenGenerator(sessions_jwt.NewConfigMust())
 
 	logger.Debug("initializing sessions feature")
 	sessionsRepository := sessions_repository.NewSessionsRepository(pool)
-	sessionsService := sessions_service.NewSessionsService(sessionsRepository, tokenGenerator)
+	sessionsService := sessions_service.NewSessionsService(sessionsRepository, tokenGenerator, transactionManager)
 
 	logger.Debug("initializing sessions feature")
 	usersRepository := users_repository.NewUsersRepository(pool)
-	usersService := users_service.NewUsersService(usersRepository, sessionsService)
+	usersService := users_service.NewUsersService(usersRepository, sessionsService, transactionManager)
 	usersTransportHTTP := users_transport_http.NewUsersHandler(usersService, tokenGenerator)
 
 	logger.Debug("initializing router")

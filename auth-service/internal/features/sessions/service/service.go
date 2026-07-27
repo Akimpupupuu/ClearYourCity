@@ -10,6 +10,7 @@ import (
 type sessionsService struct {
 	sessionsRepository SessionsRepository
 	tokenGenerator     *sessions_jwt.TokenGenerator
+	transactionManager TransactionManager
 }
 
 type SessionsRepository interface {
@@ -19,9 +20,18 @@ type SessionsRepository interface {
 	GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error)
 }
 
-func NewSessionsService(sessionsRepository SessionsRepository, tokenGenerator *sessions_jwt.TokenGenerator) *sessionsService {
+type TransactionManager interface {
+	WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+func NewSessionsService(
+	sessionsRepository SessionsRepository,
+	tokenGenerator *sessions_jwt.TokenGenerator,
+	transactionManager TransactionManager,
+) *sessionsService {
 	return &sessionsService{
 		sessionsRepository: sessionsRepository,
 		tokenGenerator:     tokenGenerator,
+		transactionManager: transactionManager,
 	}
 }

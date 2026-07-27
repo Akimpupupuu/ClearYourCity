@@ -8,8 +8,9 @@ import (
 )
 
 type usersService struct {
-	usersRepository UsersRepository
-	sessionsService SessionsService
+	usersRepository    UsersRepository
+	sessionsService    SessionsService
+	transactionManager TransactionManager
 }
 
 type UsersRepository interface {
@@ -27,9 +28,18 @@ type SessionsService interface {
 	RevokeSessions(ctx context.Context, userID int) error
 }
 
-func NewUsersService(usersRepository UsersRepository, sessionsService SessionsService) *usersService {
+type TransactionManager interface {
+	WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+func NewUsersService(
+	usersRepository UsersRepository,
+	sessionsService SessionsService,
+	transactionManager TransactionManager,
+) *usersService {
 	return &usersService{
-		usersRepository: usersRepository,
-		sessionsService: sessionsService,
+		usersRepository:    usersRepository,
+		sessionsService:    sessionsService,
+		transactionManager: transactionManager,
 	}
 }

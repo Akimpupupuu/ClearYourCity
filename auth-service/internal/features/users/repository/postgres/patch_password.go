@@ -6,12 +6,10 @@ import (
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
 	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
+	core_postgres_transaction "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/transaction"
 )
 
 func (r *usersRepository) PatchPassword(ctx context.Context, user core_domain.User) error {
-	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
-	defer cancel()
-
 	query := `
 	UPDATE auth_service.users
 	SET
@@ -19,6 +17,20 @@ func (r *usersRepository) PatchPassword(ctx context.Context, user core_domain.Us
 		version = version+1
 	WHERE id = $2 AND version = $3
 	`
+	if tx, ok := core_postgres_transaction.GetTxFromContext(ctx); ok {
+		cmdTag, err := tx.Exec(ctx, query, user.HashedPassword, user.ID, user.Version)
+		if err != nil {
+			return fmt.Errorf("execute query: %w", err)
+		}
+
+		if cmdTag.RowsAffected() == 0 {
+			return fmt.Errorf("user with id = '%d' currently accessed: %w", user.ID, core_errors.ErrConflict)
+		}
+
+		return nil
+	}
+	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
+	defer cancel()
 
 	cmdTag, err := r.pool.Exec(ctx, query, user.HashedPassword, user.ID, user.Version)
 	if err != nil {
