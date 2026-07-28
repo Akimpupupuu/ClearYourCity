@@ -1,7 +1,10 @@
 package core_domain
 
 import (
+	"fmt"
 	"time"
+
+	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
 )
 
 type Session struct {
@@ -29,4 +32,16 @@ func NewSession(
 		CreatedAt:    createdAt,
 		ExpiresAt:    expiresAt,
 	}
+}
+
+func (s *Session) Validate() error {
+	if s.IsRevoked {
+		return fmt.Errorf("token reuse: %w", core_errors.ErrTokenReuse)
+	}
+
+	if s.ExpiresAt.Before(time.Now()) {
+		return fmt.Errorf("token expired: %w", core_errors.ErrUnauthorized)
+	}
+
+	return nil
 }

@@ -24,7 +24,7 @@ func (h *usersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	serviceResponse, err := h.usersService.RefreshToken(ctx, cookie.Value)
 	if err != nil {
-		if errors.Is(err, core_errors.ErrUnauthorized) {
+		if errors.Is(err, core_errors.ErrUnauthorized) || errors.Is(err, core_errors.ErrTokenReuse) {
 			http.SetCookie(w, &http.Cookie{
 				Name:     "refresh_token",
 				Value:    "",
@@ -49,5 +49,4 @@ func (h *usersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 
 	response := LoginDTOFromService(serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt)
 	responseHandler.JsonResponse(response, http.StatusOK)
-
 }

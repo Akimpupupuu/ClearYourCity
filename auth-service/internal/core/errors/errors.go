@@ -6,5 +6,6 @@ var (
 	ErrNotFound        = errors.New("not found")
 	ErrInvalidArgument = errors.New("invalid argument")
 	ErrConflict        = errors.New("conflict")
-	ErrUnauthorized    = errors.New("Unauthorized")
+	ErrUnauthorized    = errors.New("unauthorized")
+	ErrTokenReuse      = errors.New("token reuse")
 )

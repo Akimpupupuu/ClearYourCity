@@ -25,16 +25,13 @@ func (s *sessionsService) RefreshToken(ctx context.Context, oldRefreshToken stri
 		return SessionServiceResponse{}, fmt.Errorf("get session from repository: %w", err)
 	}
 
-	if session.IsRevoked {
-		err := s.sessionsRepository.RevokeSessions(ctx, session.UserID)
-		if err != nil {
-			return SessionServiceResponse{}, fmt.Errorf("revoke user's session: %w", err)
+	if err := session.Validate(); err != nil {
+		if errors.Is(err, core_errors.ErrTokenReuse) {
+			_ = s.sessionsRepository.RevokeSessions(ctx, session.UserID)
+			return SessionServiceResponse{}, fmt.Errorf("token reuse detected: %w", err)
 		}
-		return SessionServiceResponse{}, fmt.Errorf("detected token reuse: %w", core_errors.ErrUnauthorized)
-	}
 
-	if session.ExpiresAt.Before(time.Now()) {
-		return SessionServiceResponse{}, fmt.Errorf("session expired: %w", core_errors.ErrUnauthorized)
+		return SessionServiceResponse{}, fmt.Errorf("validate session: %w", err)
 	}
 
 	var (
