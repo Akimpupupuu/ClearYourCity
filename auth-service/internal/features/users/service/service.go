@@ -1,0 +1,45 @@
+package users_service
+
+import (
+	"context"
+
+	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
+	sessions_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/service"
+)
+
+type usersService struct {
+	usersRepository    UsersRepository
+	sessionsService    SessionsService
+	transactionManager TransactionManager
+}
+
+type UsersRepository interface {
+	CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
+	GetUserByEmail(ctx context.Context, email string) (core_domain.User, error)
+	GetUserByID(ctx context.Context, userID int) (core_domain.User, error)
+	PatchPassword(ctx context.Context, user core_domain.User) error
+	PatchUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
+}
+
+type SessionsService interface {
+	CreateSession(ctx context.Context, userID int) (sessions_service.SessionServiceResponse, error)
+	RefreshToken(ctx context.Context, oldRefreshToken string) (sessions_service.SessionServiceResponse, error)
+	RevokeSession(ctx context.Context, refreshToken string) error
+	RevokeSessions(ctx context.Context, userID int) error
+}
+
+type TransactionManager interface {
+	WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+func NewUsersService(
+	usersRepository UsersRepository,
+	sessionsService SessionsService,
+	transactionManager TransactionManager,
+) *usersService {
+	return &usersService{
+		usersRepository:    usersRepository,
+		sessionsService:    sessionsService,
+		transactionManager: transactionManager,
+	}
+}

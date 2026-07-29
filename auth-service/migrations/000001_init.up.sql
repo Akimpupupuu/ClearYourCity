@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS auth_service.users (
 CREATE TABLE IF NOT EXISTS auth_service.sessions (
     id UUID PRIMARY KEY NOT NULL,
     user_id BIGINT NOT NULL REFERENCES auth_service.users(id) ON DELETE CASCADE,
-    refresh_token TEXT NOT NULL,
+    refresh_token_hash TEXT NOT NULL,
     is_revoked BOOLEAN NOT NULL DEFAULT false,
     created_at TIMESTAMPTZ NOT NULL,
     expires_at TIMESTAMPTZ NOT NULL

@@ -1,0 +1,37 @@
+package sessions_service
+
+import (
+	"context"
+
+	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
+	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
+)
+
+type sessionsService struct {
+	sessionsRepository SessionsRepository
+	tokenGenerator     *sessions_jwt.TokenGenerator
+	transactionManager TransactionManager
+}
+
+type SessionsRepository interface {
+	CreateSession(ctx context.Context, session core_domain.Session) error
+	RevokeSession(ctx context.Context, hashedRefreshToken string) error
+	RevokeSessions(ctx context.Context, userID int) error
+	GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error)
+}
+
+type TransactionManager interface {
+	WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error
+}
+
+func NewSessionsService(
+	sessionsRepository SessionsRepository,
+	tokenGenerator *sessions_jwt.TokenGenerator,
+	transactionManager TransactionManager,
+) *sessionsService {
+	return &sessionsService{
+		sessionsRepository: sessionsRepository,
+		tokenGenerator:     tokenGenerator,
+		transactionManager: transactionManager,
+	}
+}
