@@ -14,7 +14,7 @@ const (
 	pgxViolatesUniqueErrorCode = "23505"
 )
 
-func (r *usersRepository) CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error) {
+func (r *usersRepository) CreateUser(ctx context.Context, user *core_domain.User) (*core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 
@@ -26,25 +26,25 @@ func (r *usersRepository) CreateUser(ctx context.Context, user core_domain.User)
 
 	row := r.pool.QueryRow(ctx, query, user.FullName, user.Email, user.HashedPassword, user.CreatedAt)
 
-	var usersModel UserModel
+	var userModel UserModel
 	if err := row.Scan(
-		&usersModel.ID,
-		&usersModel.Version,
-		&usersModel.FullName,
-		&usersModel.Email,
-		&usersModel.HashedPassword,
-		&usersModel.CreatedAt,
+		&userModel.ID,
+		&userModel.Version,
+		&userModel.FullName,
+		&userModel.Email,
+		&userModel.HashedPassword,
+		&userModel.CreatedAt,
 	); err != nil {
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == pgxViolatesUniqueErrorCode {
-				return core_domain.User{}, fmt.Errorf("%v: user with email = '%s': %w", err, user.Email, core_errors.ErrConflict)
+				return nil, fmt.Errorf("%v: user with email = '%s': %w", err, user.Email, core_errors.ErrConflict)
 			}
 		}
 
-		return core_domain.User{}, fmt.Errorf("scan error: %w", err)
+		return nil, fmt.Errorf("scan error: %w", err)
 	}
 
-	userDomain := DomainFromModel(usersModel)
+	userDomain := domainFromModel(userModel)
 	return userDomain, nil
 }

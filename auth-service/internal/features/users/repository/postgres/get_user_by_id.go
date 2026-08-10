@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *usersRepository) GetUserByID(ctx context.Context, userID int) (core_domain.User, error) {
+func (r *usersRepository) GetUserByID(ctx context.Context, userID int) (*core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 
@@ -32,12 +32,12 @@ func (r *usersRepository) GetUserByID(ctx context.Context, userID int) (core_dom
 		&userModel.CreatedAt,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return core_domain.User{}, fmt.Errorf("user with id = '%d': %w", userID, core_errors.ErrNotFound)
+			return nil, fmt.Errorf("user with id = '%d': %w", userID, core_errors.ErrNotFound)
 		}
 
-		return core_domain.User{}, fmt.Errorf("scan user: %w", err)
+		return nil, fmt.Errorf("scan user: %w", err)
 	}
 
-	userDomain := DomainFromModel(userModel)
+	userDomain := domainFromModel(userModel)
 	return userDomain, nil
 }

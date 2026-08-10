@@ -9,7 +9,7 @@ import (
 	core_postgres_transaction "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/postgres/transaction"
 )
 
-func (r *usersRepository) PatchPassword(ctx context.Context, user core_domain.User) error {
+func (r *usersRepository) PatchPassword(ctx context.Context, user *core_domain.User) error {
 	query := `
 	UPDATE auth_service.users
 	SET

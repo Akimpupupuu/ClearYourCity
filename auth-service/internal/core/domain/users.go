@@ -21,8 +21,8 @@ type User struct {
 	CreatedAt      time.Time
 }
 
-func NewUser(id int, version int, fullName string, email string, hashedPassword string, createdAt time.Time) User {
-	return User{
+func NewUser(id int, version int, fullName string, email string, hashedPassword string, createdAt time.Time) *User {
+	return &User{
 		ID:             id,
 		Version:        version,
 		FullName:       fullName,
@@ -32,8 +32,8 @@ func NewUser(id int, version int, fullName string, email string, hashedPassword 
 	}
 }
 
-func NewUserUninitialized(fullName string, email string, hashedPassword string) User {
-	return User{
+func NewUserUninitialized(fullName string, email string, hashedPassword string) *User {
+	return &User{
 		ID:             UninitializedID,
 		Version:        UninitializedVersion,
 		FullName:       fullName,

@@ -20,9 +20,9 @@ type UsersService interface {
 	LoginUser(ctx context.Context, loginCommand core_domain.LoginCommand) (users_service.LoginServiceResponse, error)
 	LogoutUser(ctx context.Context, refreshToken string) error
 	RefreshToken(ctx context.Context, refreshToken string) (users_service.RefreshTokenServiceResponse, error)
-	GetUser(ctx context.Context, userID int) (core_domain.User, error)
-	PatchUser(ctx context.Context, patchUserCommand core_domain.PatchUserCommand) (core_domain.User, error)
-	PatchPassword(ctx context.Context, patchPasswordCommand core_domain.PatchPasswordCommand) error
+	GetUser(ctx context.Context, userID int) (*core_domain.User, error)
+	PatchUser(ctx context.Context, userID int, patchUserCommand core_domain.PatchUserCommand) (*core_domain.User, error)
+	PatchPassword(ctx context.Context, userID int, patchPasswordCommand core_domain.PatchPasswordCommand) error
 }
 
 func NewUsersHandler(usersService UsersService, tokenGenerator *sessions_jwt.TokenGenerator) *usersHandler {

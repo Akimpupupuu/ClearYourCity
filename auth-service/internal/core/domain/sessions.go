@@ -23,8 +23,8 @@ func NewSession(
 	isRevoked bool,
 	createdAt time.Time,
 	expiresAt time.Time,
-) Session {
-	return Session{
+) *Session {
+	return &Session{
 		ID:           id,
 		UserID:       userID,
 		RefreshToken: refreshToken,

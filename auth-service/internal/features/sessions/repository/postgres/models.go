@@ -15,7 +15,7 @@ type SessionModel struct {
 	ExpiresAt        time.Time
 }
 
-func DomainFromModel(model SessionModel) core_domain.Session {
+func domainFromModel(model SessionModel) *core_domain.Session {
 	return core_domain.NewSession(
 		model.ID,
 		model.UserID,

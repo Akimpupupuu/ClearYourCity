@@ -10,7 +10,7 @@ import (
 )
 
 type RegisterServiceResponse struct {
-	User                  core_domain.User
+	User                  *core_domain.User
 	AccessToken           string
 	RefreshToken          string
 	AccessTokenExpiresAt  time.Time

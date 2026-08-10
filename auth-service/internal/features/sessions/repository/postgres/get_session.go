@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *sessionsRepository) GetSession(ctx context.Context, oldHashedToken string) (core_domain.Session, error) {
+func (r *sessionsRepository) GetSession(ctx context.Context, oldHashedToken string) (*core_domain.Session, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 
@@ -32,12 +32,12 @@ func (r *sessionsRepository) GetSession(ctx context.Context, oldHashedToken stri
 		&sessionModel.ExpiresAt,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return core_domain.Session{}, fmt.Errorf("session with hash = '%s': %w", oldHashedToken, core_errors.ErrNotFound)
+			return nil, fmt.Errorf("session with hash = '%s': %w", oldHashedToken, core_errors.ErrNotFound)
 		}
 
-		return core_domain.Session{}, fmt.Errorf("scan session: %w", err)
+		return nil, fmt.Errorf("scan session: %w", err)
 	}
 
-	sessionDomain := DomainFromModel(sessionModel)
+	sessionDomain := domainFromModel(sessionModel)
 	return sessionDomain, nil
 }

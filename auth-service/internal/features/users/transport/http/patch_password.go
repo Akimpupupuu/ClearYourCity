@@ -4,9 +4,11 @@ import (
 	"net/http"
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
+	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
 	http_request "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/request"
 	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
+	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 )
 
 type PatchPasswordRequest struct {
@@ -19,6 +21,12 @@ func (h *usersHandler) PatchPassword(w http.ResponseWriter, r *http.Request) {
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)
 
+	claims, ok := sessions_jwt.FromContext(ctx)
+	if !ok {
+		responseHandler.ErrorResponse(core_errors.ErrUnauthorized, "failed to get token claims")
+		return
+	}
+
 	var request PatchPasswordRequest
 	if err := http_request.DecodeAndValidate(r, &request); err != nil {
 		responseHandler.ErrorResponse(err, "failed to decode and validate HTTP request")
@@ -27,7 +35,7 @@ func (h *usersHandler) PatchPassword(w http.ResponseWriter, r *http.Request) {
 
 	patchPasswordCommand := core_domain.NewPatchPasswordCommand(request.OldPassword, request.NewPassword)
 
-	if err := h.usersService.PatchPassword(ctx, patchPasswordCommand); err != nil {
+	if err := h.usersService.PatchPassword(ctx, claims.UserID, patchPasswordCommand); err != nil {
 		responseHandler.ErrorResponse(err, "failed to patch password")
 		return
 	}

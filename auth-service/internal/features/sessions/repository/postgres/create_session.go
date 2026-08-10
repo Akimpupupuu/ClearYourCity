@@ -15,7 +15,7 @@ const (
 	pgxViolatesForeignKeyErrorCode = "23503"
 )
 
-func (r *sessionsRepository) CreateSession(ctx context.Context, session core_domain.Session) error {
+func (r *sessionsRepository) CreateSession(ctx context.Context, session *core_domain.Session) error {
 	query := `
 	INSERT INTO auth_service.sessions (id, user_id, refresh_token_hash, is_revoked, created_at, expires_at)
 	VALUES ($1, $2, $3, $4, $5, $6)

@@ -13,7 +13,7 @@ type Config struct {
 func NewConfig() (Config, error) {
 	var config Config
 
-	if err := envconfig.Process("JWT", &config); err != nil {
+	if err := envconfig.Process("AUTH_JWT", &config); err != nil {
 		return Config{}, fmt.Errorf("process envconfig: %w", err)
 	}
 
