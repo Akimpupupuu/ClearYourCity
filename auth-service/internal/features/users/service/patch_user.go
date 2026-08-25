@@ -10,10 +10,6 @@ import (
 )
 
 func (s *usersService) PatchUser(ctx context.Context, userID int, patchUserCommand core_domain.PatchUserCommand) (*core_domain.User, error) {
-	if err := patchUserCommand.Validate(); err != nil {
-		return nil, fmt.Errorf("validate 'patchUserCommand': %w", err)
-	}
-
 	user, err := s.usersRepository.GetUserByID(ctx, userID)
 	if err != nil {
 		if errors.Is(err, core_errors.ErrNotFound) {

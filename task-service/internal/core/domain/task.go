@@ -89,3 +89,22 @@ func (t *Task) Validate() error {
 
 	return nil
 }
+
+func (t *Task) ApplyPatch(title *string, description *string) error {
+	tmp := *t
+
+	if title != nil {
+		tmp.Title = *title
+	}
+
+	if description != nil {
+		tmp.Description = *description
+	}
+
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("validate task: %w", err)
+	}
+
+	*t = tmp
+	return nil
+}

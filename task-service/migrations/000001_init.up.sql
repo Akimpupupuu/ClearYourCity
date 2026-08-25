@@ -16,3 +16,10 @@ CREATE TABLE IF NOT EXISTS task_service.task (
         (status IN ('done', 'rejected') AND completed_at IS NOT NULL AND completed_at >= created_at)
     )
 );
+
+CREATE TABLE IF NOT EXISTS task_service.message (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    task_id BIGINT NOT NULL,
+    status varchar(100) NOT NULL DEFAULT 'pending' CHECK(status IN ('pending', 'processed')),
+    payload JSONB NOT NULL
+);

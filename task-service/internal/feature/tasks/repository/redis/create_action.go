@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	acceptTTL = time.Hour * 72
+	acceptTTL = time.Hour * 168
 )
 
 func (r *tasksRedis) CreateAction(ctx context.Context, token string, taskID int) error {

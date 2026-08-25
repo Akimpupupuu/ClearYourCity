@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
+	"log"
 	"os/signal"
 	"syscall"
 	"time"
@@ -20,10 +20,15 @@ import (
 	users_service "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/service"
 	users_transport_http "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/users/transport/http"
 	"github.com/go-chi/chi"
-	"go.uber.org/zap"
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatalf("application critical error: %v", err)
+	}
+}
+
+func run() error {
 	time.Local = time.UTC
 
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
@@ -31,8 +36,7 @@ func main() {
 
 	logger, err := core_logger.InitLogger()
 	if err != nil {
-		fmt.Println("failed init application logger:", err)
-		os.Exit(1)
+		return fmt.Errorf("failed init application logger: %w", err)
 	}
 	defer func() {
 		_ = logger.Sync()
@@ -41,7 +45,7 @@ func main() {
 	logger.Debug("initializing postgres connection pool")
 	pool, err := core_postgres_pool.NewPool(ctx, core_postgres_pool.NewConfigMust())
 	if err != nil {
-		logger.Fatal("failed to init postgres connection pool", zap.Error(err))
+		return fmt.Errorf("failed to init postgres connection pool: %w", err)
 	}
 	defer pool.Close()
 
@@ -68,5 +72,9 @@ func main() {
 
 	logger.Debug("initializing HTTP Server")
 	server := http_server.NewHTTPServer(router, http_server.NewConfigMust(), logger)
-	server.Run(ctx)
+	if err = server.Run(ctx); err != nil {
+		return fmt.Errorf("run http server: %w", err)
+	}
+
+	return nil
 }

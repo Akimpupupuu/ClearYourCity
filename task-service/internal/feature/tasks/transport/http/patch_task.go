@@ -12,12 +12,14 @@ import (
 	http_response "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/response"
 )
 
-type CreateTaskRequest struct {
-	Title       string `json:"title" validate:"required,min=3,max=100"`
-	Description string `json:"description" validate:"required,min=10,max=1000"`
+const taskIDPathValue = "id"
+
+type PatchTaskRequest struct {
+	Title       *string `json:"title" validate:"omitempty,min=3,max=100"`
+	Description *string `json:"description" validate:"omitempty,min=10,max=1000"`
 }
 
-func (h *tasksHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
+func (h *tasksHandler) PatchTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)
@@ -25,27 +27,30 @@ func (h *tasksHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	claims, ok := core_jwt.FromContext(ctx)
 	if !ok {
 		err := fmt.Errorf("get user claims from context: %w", core_errors.ErrUnauthorized)
-		responseHandler.ErrorResponse(err, "failed to get task")
+		responseHandler.ErrorResponse(err, "failed to patch task")
 		return
 	}
 
-	var request CreateTaskRequest
+	taskID, err := http_request.GetIntPathValue(r, taskIDPathValue)
+	if err != nil {
+		responseHandler.ErrorResponse(err, "failed to patch task")
+		return
+	}
+
+	var request PatchTaskRequest
 	if err := http_request.DecodeAndValidate(r, &request); err != nil {
 		responseHandler.ErrorResponse(err, "decode and validate HTTP request")
 		return
 	}
 
-	domain := domainFromDTO(request, claims.UserID)
-	task, err := h.tasksService.CreateTask(ctx, domain)
+	patchTaskCommand := core_domain.NewPatchTaskCommand(request.Title, request.Description)
+
+	task, err := h.tasksService.PatchTask(ctx, taskID, claims.UserID, patchTaskCommand)
 	if err != nil {
-		responseHandler.ErrorResponse(err, "failed to create task")
+		responseHandler.ErrorResponse(err, "failed to patch task")
 		return
 	}
 
 	response := dtoFromDomain(task)
-	responseHandler.JsonResponse(response, http.StatusCreated)
-}
-
-func domainFromDTO(request CreateTaskRequest, userID int) *core_domain.Task {
-	return core_domain.NewTaskUninitialized(request.Title, request.Description, userID)
+	responseHandler.JsonResponse(response, http.StatusOK)
 }

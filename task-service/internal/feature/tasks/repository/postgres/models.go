@@ -50,3 +50,10 @@ func domainsFromModel(models []TaskModel) ([]*core_domain.Task, error) {
 
 	return domains, nil
 }
+
+type MessageModel struct {
+	ID      int
+	TaskID  int
+	Status  string
+	Payload []byte
+}

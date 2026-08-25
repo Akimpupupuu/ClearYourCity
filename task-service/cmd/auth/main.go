@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
+	"log"
 	"os/signal"
 	"syscall"
 	"time"
@@ -15,6 +15,7 @@ import (
 	http_router "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/router"
 	http_server "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/server"
 	core_kafka "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/kafka"
+	tasks_outbox "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/outbox"
 	tasks_kafka "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/repository/kafka"
 	tasks_postgres "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/repository/postgres"
 	tasks_redis "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/repository/redis"
@@ -24,6 +25,12 @@ import (
 )
 
 func main() {
+	if err := run(); err != nil {
+		log.Fatalf("critical application error: %v", err)
+	}
+}
+
+func run() error {
 	const (
 		apiVersionV1 = "v1"
 	)
@@ -35,8 +42,7 @@ func main() {
 
 	logger, err := core_zap_logger.NewLogger()
 	if err != nil {
-		fmt.Println("failed init application logger:", err)
-		os.Exit(1)
+		return fmt.Errorf("failed init application logger: %w", err)
 	}
 	defer func() {
 		_ = logger.Sync()
@@ -45,7 +51,7 @@ func main() {
 	logger.Debug("initializing postgres connection pool")
 	pool, err := core_postgres_pool.NewPool(ctx, core_postgres_pool.NewConfigMust())
 	if err != nil {
-		logger.Fatal("failed to init postgres connection pool", core_logger.Err(err))
+		return fmt.Errorf("failed to init postgres connection pool: %w", err)
 	}
 	defer pool.Close()
 
@@ -58,21 +64,29 @@ func main() {
 	logger.Debug("initializing redis database")
 	redis, err := core_redis.NewRedisClient(ctx, core_redis.NewConfigMust())
 	if err != nil {
-		logger.Fatal("failed to init redis", core_logger.Err(err))
+		return fmt.Errorf("failed to init redis: %w", err)
 	}
+	defer func() {
+		_ = redis.Close()
+	}()
 
 	logger.Debug("initializing redis repository")
 	redisRepository := tasks_redis.NewTasksRedis(redis)
 
 	logger.Debug("initializing kafka producer")
 	producer := core_kafka.NewProducer(core_kafka.NewConfigMust())
+	defer func() {
+		if err := producer.Close(); err != nil {
+			logger.Error("failed to close kafka producer", core_logger.Err(err))
+		}
+	}()
 
 	logger.Debug("initializing producer repository")
 	producerRepository := tasks_kafka.NewTasksKafkaRepository(producer)
 
 	logger.Debug("initializing tasks feature")
 	tasksRepository := tasks_postgres.NewTasksRepository(pool)
-	tasksService := tasks_service.NewTasksService(tasksRepository, redisRepository, producerRepository)
+	tasksService := tasks_service.NewTasksService(tasksRepository, redisRepository)
 	tasksTransportHTTP := tasks_transport_http.NewTasksHandler(tasksService)
 
 	logger.Debug("initializing router")
@@ -81,12 +95,15 @@ func main() {
 		tasksTransportHTTP.Register(apiRouter)
 	})
 
+	logger.Debug("initializing outbox worker")
+	worker := tasks_outbox.NewWorker(tasksRepository, redisRepository, producerRepository, logger, tasks_outbox.NewConfigMust())
+	go worker.Start(ctx)
+
 	logger.Debug("initializing HTTP Server")
 	server := http_server.NewHTTPServer(router, http_server.NewConfigMust(), logger)
-	server.Run(ctx)
+	if err = server.Run(ctx); err != nil {
+		return fmt.Errorf("run http server: %w", err)
+	}
 
-	logger.Debug("waiting for background tasks to complete...")
-	tasksService.GracefulShutdown()
-
-	logger.Debug("application entirely stopped")
+	return nil
 }

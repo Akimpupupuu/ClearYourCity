@@ -17,7 +17,7 @@ func (r *tasksRepository) GetTasks(ctx context.Context, userID int, limit int, o
 	WHERE user_id = $1
 	ORDER BY id ASC
 	LIMIT $2
-	OFFSET $3
+	OFFSET $3;
 	`
 
 	rows, err := r.pool.Query(ctx, query, userID, limit, offset)
@@ -48,12 +48,12 @@ func (r *tasksRepository) GetTasks(ctx context.Context, userID int, limit int, o
 		taskModels = append(taskModels, taskModel)
 	}
 	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("next rows: %w", err)
+		return nil, fmt.Errorf("next rows: %w", rows.Err())
 	}
 
 	taskDomains, err := domainsFromModel(taskModels)
 	if err != nil {
-		return nil, fmt.Errorf("convert models to domain: %w", err)
+		return nil, fmt.Errorf("create domain from model: %w", err)
 	}
 
 	return taskDomains, nil

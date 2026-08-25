@@ -7,17 +7,17 @@ import (
 )
 
 type TaskResponseDTO struct {
-	ID          int
-	Version     int
-	UserID      int
-	Title       string
-	Description string
-	Status      string
-	CreatedAt   time.Time
-	CompletedAt *time.Time
+	ID          int        `json:"id"`
+	Version     int        `json:"version"`
+	UserID      int        `json:"user_id"`
+	Title       string     `json:"title"`
+	Description string     `json:"description"`
+	Status      string     `json:"status"`
+	CreatedAt   time.Time  `json:"created_at"`
+	CompletedAt *time.Time `json:"comleted_at"`
 }
 
-func DTOFromDomain(task *core_domain.Task) TaskResponseDTO {
+func dtoFromDomain(task *core_domain.Task) TaskResponseDTO {
 	return TaskResponseDTO{
 		ID:          task.ID,
 		Version:     task.Version,
@@ -30,10 +30,10 @@ func DTOFromDomain(task *core_domain.Task) TaskResponseDTO {
 	}
 }
 
-func DTOFromDomains(tasks []*core_domain.Task) []TaskResponseDTO {
+func dtoFromDomains(tasks []*core_domain.Task) []TaskResponseDTO {
 	response := make([]TaskResponseDTO, len(tasks))
 	for i := range tasks {
-		dto := DTOFromDomain(tasks[i])
+		dto := dtoFromDomain(tasks[i])
 		response[i] = dto
 	}
 
