@@ -9,16 +9,16 @@ import (
 type status string
 
 const (
-	statusCreated    status = "created"
-	statusInProgress status = "in_progress"
-	statusDone       status = "done"
-	statusRejected   status = "rejected"
+	StatusCreated    status = "created"
+	StatusInProgress status = "in_progress"
+	StatusDone       status = "done"
+	StatusRejected   status = "rejected"
 )
 
 func NewStatus(value string) (status, error) {
 	class := status(value)
 	switch class {
-	case statusCreated, statusInProgress, statusDone, statusRejected:
+	case StatusCreated, StatusInProgress, StatusDone, StatusRejected:
 		return class, nil
 	default:
 		return "", fmt.Errorf("invalid status: %w", core_errors.ErrInvalidArgument)
@@ -26,5 +26,5 @@ func NewStatus(value string) (status, error) {
 }
 
 func NewStatusCreated() status {
-	return status(statusCreated)
+	return status(StatusCreated)
 }

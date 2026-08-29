@@ -16,7 +16,7 @@ func (r *tasksRepository) GetTask(ctx context.Context, taskID int) (*core_domain
 
 	query := `
 	SELECT id, version, user_id, title, description, status, created_at, completed_at
-	FROM tasks_service.task
+	FROM task_service.task
 	WHERE id = $1;
 	`
 

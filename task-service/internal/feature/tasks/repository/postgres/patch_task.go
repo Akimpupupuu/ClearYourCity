@@ -15,7 +15,7 @@ func (r *tasksRepository) PatchTask(ctx context.Context, task *core_domain.Task)
 	defer cancel()
 
 	query := `
-	UPDATE tasks_service.task
+	UPDATE task_service.task
 	SET
 		title = $1,
 		description = $2,

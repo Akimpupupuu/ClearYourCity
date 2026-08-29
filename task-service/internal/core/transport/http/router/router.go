@@ -16,6 +16,7 @@ type Router struct {
 func NewRouter(log core_logger.Logger) *Router {
 	r := chi.NewRouter()
 
+	r.Use(http_middleware.CORS())
 	r.Use(http_middleware.RequestID())
 	r.Use(http_middleware.Logger(log))
 	r.Use(http_middleware.Trace())

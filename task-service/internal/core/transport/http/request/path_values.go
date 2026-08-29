@@ -6,10 +6,11 @@ import (
 	"strconv"
 
 	core_errors "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/errors"
+	"github.com/go-chi/chi"
 )
 
 func GetIntPathValue(r *http.Request, key string) (int, error) {
-	pathValue := r.PathValue(key)
+	pathValue := chi.URLParam(r, key)
 	if pathValue == "" {
 		return 0, fmt.Errorf("no key = '%s' in path values: %w", key, core_errors.ErrInvalidArgument)
 	}

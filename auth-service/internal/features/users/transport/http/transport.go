@@ -42,7 +42,7 @@ func (h *usersHandler) Register(router chi.Router) {
 		subRouter.Group(func(protected_router chi.Router) {
 			protected_router.Use(http_middleware.Auth(h.tokenGenerator))
 
-			protected_router.Get("/get", h.GetUser)
+			protected_router.Get("/", h.GetUser)
 			protected_router.Patch("/patch_password", h.PatchPassword)
 			protected_router.Patch("/patch_user", h.PatchUser)
 		})

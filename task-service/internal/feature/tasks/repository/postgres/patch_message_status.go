@@ -14,7 +14,7 @@ func (r *tasksRepository) PatchMessageStatus(ctx context.Context, ids []int) err
 	}
 
 	query := `
-	UPDATE tasks_service.message
+	UPDATE task_service.message
 	SET status = 'processed'
 	WHERE id = ANY($1);
 	`

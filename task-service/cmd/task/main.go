@@ -8,6 +8,7 @@ import (
 	"syscall"
 	"time"
 
+	core_jwt "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/jwt"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/logger"
 	core_zap_logger "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/logger/zap"
 	core_postgres_pool "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/postgres/pool"
@@ -58,8 +59,8 @@ func run() error {
 	// logger.Debug("initializing transaction manager")
 	// transactionManager := core_postgres_transaction.NewTransactionManager(pool.Pool)
 
-	// logger.Debug("initializing token generator")
-	// tokenGenerator := core_jwt.NewTokenGenerator(core_jwt.NewConfigMust())
+	logger.Debug("initializing token generator")
+	tokenGenerator := core_jwt.NewTokenGenerator(core_jwt.NewConfigMust())
 
 	logger.Debug("initializing redis database")
 	redis, err := core_redis.NewRedisClient(ctx, core_redis.NewConfigMust())
@@ -86,8 +87,8 @@ func run() error {
 
 	logger.Debug("initializing tasks feature")
 	tasksRepository := tasks_postgres.NewTasksRepository(pool)
-	tasksService := tasks_service.NewTasksService(tasksRepository, redisRepository)
-	tasksTransportHTTP := tasks_transport_http.NewTasksHandler(tasksService)
+	tasksService := tasks_service.NewTasksService(tasksRepository, redisRepository, logger)
+	tasksTransportHTTP := tasks_transport_http.NewTasksHandler(tasksService, tokenGenerator)
 
 	logger.Debug("initializing router")
 	router := http_router.NewRouter(logger)

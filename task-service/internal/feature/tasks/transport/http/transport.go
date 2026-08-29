@@ -4,11 +4,14 @@ import (
 	"context"
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/domain"
+	core_jwt "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/jwt"
+	http_middleware "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/middleware"
 	"github.com/go-chi/chi"
 )
 
 type tasksHandler struct {
-	tasksService TasksService
+	tasksService   TasksService
+	tokenGenerator *core_jwt.TokenGenerator
 }
 
 type TasksService interface {
@@ -18,13 +21,23 @@ type TasksService interface {
 	PatchStatus(ctx context.Context, status string, token string) (*core_domain.Task, error)
 }
 
-func NewTasksHandler(tasksService TasksService) *tasksHandler {
+func NewTasksHandler(tasksService TasksService, tokenGenerator *core_jwt.TokenGenerator) *tasksHandler {
 	return &tasksHandler{
-		tasksService: tasksService,
+		tasksService:   tasksService,
+		tokenGenerator: tokenGenerator,
 	}
 }
 
 func (h *tasksHandler) Register(router chi.Router) {
-	// удаление задачи
-	// регистрация маршрутов
+	router.Route("/task", func(subRouter chi.Router) {
+		subRouter.Patch("/status", h.PatchStatus)
+
+		subRouter.Group(func(protected_router chi.Router) {
+			protected_router.Use(http_middleware.Auth(h.tokenGenerator))
+
+			protected_router.Post("/", h.CreateTask)
+			protected_router.Get("/", h.GetTasks)
+			protected_router.Patch("/{id}", h.PatchTask)
+		})
+	})
 }

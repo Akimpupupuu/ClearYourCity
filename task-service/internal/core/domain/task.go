@@ -69,11 +69,11 @@ func (t *Task) Validate() error {
 		return fmt.Errorf("invalid 'description' length: %d: %w", descriptionLength, core_errors.ErrInvalidArgument)
 	}
 
-	if (t.Status == statusCreated || t.Status == statusInProgress) && t.CompletedAt != nil {
+	if (t.Status == StatusCreated || t.Status == StatusInProgress) && t.CompletedAt != nil {
 		return fmt.Errorf("'completed_at' must be nil if 'status' = 'created' or 'in_progress': %w", core_errors.ErrInvalidArgument)
 	}
 
-	if (t.Status == statusDone || t.Status == statusRejected) && t.CompletedAt == nil {
+	if (t.Status == StatusDone || t.Status == StatusRejected) && t.CompletedAt == nil {
 		return fmt.Errorf("'completed_at' can't be nil if 'status' = 'done' or 'rejected': %w", core_errors.ErrInvalidArgument)
 	}
 

@@ -15,7 +15,7 @@ func (r *tasksRepository) PatchStatus(ctx context.Context, task *core_domain.Tas
 	defer cancel()
 
 	query := `
-	UPDATE tasks_service.tasks
+	UPDATE task_service.tasks
 	SET 
 		status = $1,
 		version = version+1

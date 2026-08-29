@@ -1,4 +1,22 @@
 services:
+  auth-service:
+    build:
+      context: ${PROJECT_ROOT}/auth-service
+      dockerfile: ${PROJECT_ROOT}/auth-service/cmd/auth/Dockerfile
+    container_name: auth-service
+    environment:
+      - AUTH_HTTP_ADDR=${AUTH_HTTP_ADDR}
+      - AUTH_HTTP_SHUTDOWN_TIMEOUT=${AUTH_HTTP_SHUTDOWN_TIMEOUT}
+      - AUTH_POSTGRES_HOST=auth-service-postgres
+      - AUTH_POSTGRES_USER=${AUTH_POSTGRES_USER}
+      - AUTH_POSTGRES_PASSWORD=${AUTH_POSTGRES_PASSWORD}
+      - AUTH_POSTGRES_DB=${AUTH_POSTGRES_DB}
+      - AUTH_POSTGRES_TIMEOUT=${AUTH_POSTGRES_TIMEOUT}
+      - AUTH_JWT_SECRET_KEY=${AUTH_JWT_SECRET_KEY}
+    ports:
+      - "5050:5050"
+    restart: always
+
   auth-service-postgres:
     image: postgres:18.4-bookworm
     container_name: auth-service-postgres
@@ -17,6 +35,42 @@ services:
     volumes:
       - ${PROJECT_ROOT}/auth-service/migrations:/migrations
 
+  swagger-auth:
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile_inline: |
+        FROM golang:1.25-alpine
+        RUN apk add --no-cache git
+        RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
+        WORKDIR /code
+        ENTRYPOINT ["swag"]
+    volumes:
+      - ${PROJECT_ROOT}/auth-service:/code
+
+  task-service:
+    build:
+      context: ${PROJECT_ROOT}/task-service
+      dockerfile: ${PROJECT_ROOT}/task-service/cmd/task/Dockerfile
+    container_name: task-service
+    environment:
+      - TASK_HTTP_ADDR=${TASK_HTTP_ADDR}
+      - TASK_HTTP_SHUTDOWN_TIMEOUT=${TASK_HTTP_SHUTDOWN_TIMEOUT}
+      - TASK_POSTGRES_HOST=task-service-postgres
+      - TASK_POSTGRES_USER=${TASK_POSTGRES_USER}
+      - TASK_POSTGRES_PASSWORD=${TASK_POSTGRES_PASSWORD}
+      - TASK_POSTGRES_DB=${TASK_POSTGRES_DB}
+      - TASK_POSTGRES_TIMEOUT=${TASK_POSTGRES_TIMEOUT}
+      - TASK_JWT_SECRET_KEY=${TASK_JWT_SECRET_KEY}
+      - TASK_OUTBOX_LIMIT=${TASK_OUTBOX_LIMIT}
+      - TASK_OUTBOX_INTERVAL=${TASK_OUTBOX_INTERVAL}
+      - TASK_KAFKA_BROKERS=${TASK_KAFKA_BROKERS}
+      - TASK_REDIS_ADDR=task-redis:6379
+      - TASK_REDIS_PASSWORD=${TASK_REDIS_PASSWORD}
+      - TASK_REDIS_DB=${TASK_REDIS_DB}
+    ports:
+    - "5051:5051"
+    restart: always
+
   task-service-postgres:
     image: postgres:18.4-bookworm
     container_name: task-service-postgres
@@ -34,3 +88,49 @@ services:
     image: migrate/migrate:v4.19.1
     volumes:
       - ${PROJECT_ROOT}/task-service/migrations:/migrations
+
+  task-redis:
+    image: redis:8.8-alpine
+    container_name: task-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ${PROJECT_ROOT}/out/task/redisdata:/data
+    command: redis-server --appendonly yes --requirepass ${TASK_REDIS_PASSWORD}
+    restart: always
+
+  task-kafka:
+    image: confluentinc/cp-kafka:8.0.7
+    container_name: task-kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: 'broker,controller'
+      KAFKA_CONTROLLER_QUORUM_VOTERS: '1@task-kafka:29093'
+      KAFKA_LISTENERS: 'PLAINTEXT://0.0.0.0:29092,CONTROLLER://0.0.0.0:29093,PLAINTEXT_HOST://0.0.0.0:9092'
+      KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://task-kafka:29092,PLAINTEXT_HOST://localhost:9092'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
+      KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+      KAFKA_CONTROLLER_LISTENER_NAMES: 'CONTROLLER'
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_LOG_DIRS: '/var/lib/kafka/data'
+      CLUSTER_ID: ${TASK_KAFKA_CLUSTER_ID}
+    volumes:
+      - ${PROJECT_ROOT}/out/task/kafkadata:/var/lib/kafka/data
+    restart: always
+
+  swagger-task:
+    build:
+      context: ${PROJECT_ROOT}
+      dockerfile_inline: |
+        FROM golang:1.25-alpine
+        RUN apk add --no-cache git
+        RUN go install github.com/swaggo/swag/cmd/swag@v1.16.6
+        WORKDIR /code
+        ENTRYPOINT ["swag"]
+    volumes:
+      - ${PROJECT_ROOT}/task-service:/code
