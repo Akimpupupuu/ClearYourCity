@@ -14,13 +14,26 @@ import (
 )
 
 type RegisterUserRequest struct {
-	FullName string `json:"full_name" validate:"required,min=3,max=100"`
-	Email    string `json:"email" validate:"required,min=5,max=100"`
-	Password string `json:"password" validate:"required,min=8"`
+	FullName string `json:"full_name" validate:"required,min=3,max=100" example:"Иван Иванов"`
+	Email    string `json:"email" validate:"required,min=5,max=100" example:"ivan@gmail.com"`
+	Password string `json:"password" validate:"required,min=8" example:"ivan1234"`
 }
 
 type RegisterResponse ResponseRegisterDTO
 
+// RegisterUser  godoc
+// @Summary 	 Register user
+// @Description  Register user in our system
+// @Tags 		 user
+// @Accept		 json
+// @Produce 	 json
+// @Param 		 request body RegisterUserRequest true "Register user request body"
+// @Success 	 201 {object} RegisterResponse "Succesfully registered user"
+// @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	 404 {object} http_response.ErrorResponse "Not found"
+// @Failure 	 409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"
+// @Router 		 /auth/register [post]
 func (h *usersHandler) RegisterUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

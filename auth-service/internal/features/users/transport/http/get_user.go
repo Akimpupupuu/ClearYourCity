@@ -10,6 +10,18 @@ import (
 	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 )
 
+type GetUserResponse ResponseUserDTO
+
+// GetUser 	godoc
+// @Summary 	Get user
+// @Description Get user's data
+// @Tags 		user
+// @Produce 	json
+// @Success 	200 {object} GetUserResponse "Succesfully got user"
+// @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Security    Auth
+// @Router 		/auth/ [get]
 func (h *usersHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -40,6 +52,6 @@ func (h *usersHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := UserDTOFromDomain(userDomain)
+	response := GetUserResponse(UserDTOFromDomain(userDomain))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }

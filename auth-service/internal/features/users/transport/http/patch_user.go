@@ -12,10 +12,26 @@ import (
 )
 
 type PatchUserRequest struct {
-	FullName *string `json:"full_name" validate:"omitempty,min=3,max=100"`
-	Email    *string `json:"email" validate:"omitempty,min=5,max=100"`
+	FullName *string `json:"full_name" validate:"omitempty,min=3,max=100" example:"Иван Иванов"`
+	Email    *string `json:"email" validate:"omitempty,min=5,max=100" example:"ivan@gmail.com"`
 }
 
+type PatchUserResponse ResponseUserDTO
+
+// PatchUser godoc
+// @Summary 	 Patch user
+// @Description  Patch user
+// @Tags 		 user
+// @Accept 		 json
+// @Produce 	 json
+// @Param 		 request body PatchUserRequest true "Patch user request body"
+// @Success 	 200 {object} PatchUserResponse "Succesfully patched user"
+// @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	 409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"
+// @Security     Auth
+// @Router 		 /auth/patch_user [patch]
 func (h *usersHandler) PatchUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -41,6 +57,6 @@ func (h *usersHandler) PatchUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := UserDTOFromDomain(user)
+	response := PatchUserResponse(UserDTOFromDomain(user))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }

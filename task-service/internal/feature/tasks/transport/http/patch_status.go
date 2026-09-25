@@ -10,6 +10,21 @@ import (
 	http_response "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/response"
 )
 
+type PatchStatusResponse TaskResponseDTO
+
+// PatchStatus 	godoc
+// @Summary 	Patch status
+// @Description Patch task's status
+// @Tags 		task
+// @Produce 	json
+// @Param 		token query string true "Identification token of the task"
+// @Param 		status query string true "New status of the task"
+// @Success 	200 {object} PatchStatusResponse "Succesfully patched task"
+// @Failure 	400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	404 {object} http_response.ErrorResponse "Not found"
+// @Failure 	409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Router 		/task/status [patch]
 func (h *tasksHandler) PatchStatus(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -27,7 +42,7 @@ func (h *tasksHandler) PatchStatus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := dtoFromDomain(task)
+	response := PatchStatusResponse(dtoFromDomain(task))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }
 

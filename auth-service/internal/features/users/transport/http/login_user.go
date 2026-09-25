@@ -12,12 +12,25 @@ import (
 )
 
 type LoginRequest struct {
-	Email    string `json:"email" validate:"required,min=5,max=100"`
-	Password string `json:"password" validate:"required,min=8"`
+	Email    string `json:"email" validate:"required,min=5,max=100" example:"ivan@gmail.com"`
+	Password string `json:"password" validate:"required,min=8" example:"ivan1234"`
 }
 
 type LoginResponse ResponseLoginDTO
 
+// LoginUser 	godoc
+// @Summary 	Log in user
+// @Description Log in user in our system
+// @Tags 		user
+// @Accept 		json
+// @Produce 	json
+// @Param 		request body LoginRequest true "Login user request body"
+// @Success 	200 {object} LoginResponse "Succesfully loged in user"
+// @Failure 	400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	404 {object} http_response.ErrorResponse "Not found"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Router 		/auth/login [post]
 func (h *usersHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -51,7 +64,7 @@ func (h *usersHandler) LoginUser(w http.ResponseWriter, r *http.Request) {
 		Path:     "/api/v1/auth",
 	})
 
-	response := LoginDTOFromService(serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt)
+	response := LoginResponse(LoginDTOFromService(serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }
 

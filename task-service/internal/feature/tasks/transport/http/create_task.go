@@ -13,10 +13,25 @@ import (
 )
 
 type CreateTaskRequest struct {
-	Title       string `json:"title" validate:"required,min=3,max=100"`
-	Description string `json:"description" validate:"required,min=10,max=1000"`
+	Title       string `json:"title" validate:"required,min=3,max=100" example:"Мусор"`
+	Description string `json:"description" validate:"required,min=10,max=1000" example:"Мусор около дома по адресу: ул. Пушкина. д. 2"`
 }
 
+type CreateTaskResponse TaskResponseDTO
+
+// CreateTask 	godoc
+// @Summary 	Create task
+// @Description Create new task in our system
+// @Tags 		task
+// @Accept 		json
+// @Produce 	json
+// @Param 		request body CreateTaskRequest true "CreateTask request body"
+// @Success 	201 {object} CreateTaskResponse "Succesfully created task"
+// @Failure 	400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Security    Auth
+// @Router 		/task [post]
 func (h *tasksHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -42,7 +57,7 @@ func (h *tasksHandler) CreateTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := dtoFromDomain(task)
+	response := CreateTaskResponse(dtoFromDomain(task))
 	responseHandler.JsonResponse(response, http.StatusCreated)
 }
 

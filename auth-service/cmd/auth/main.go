@@ -22,6 +22,17 @@ import (
 	"github.com/go-chi/chi"
 )
 
+// @title 		ClearYourCity auth-service
+// @version 	1.0
+// @description ClearYourCity auth-service REST-API schema
+// @host 		127.0.0.1:5050
+// @BasePath 	/api/v1
+
+// @securityDefinitions.apikey  Auth
+// @in                          header
+// @name                        Authorization
+// @description                 Enter the token in format: Bearer <your token>
+
 func main() {
 	if err := run(); err != nil {
 		log.Fatalf("application critical error: %v", err)

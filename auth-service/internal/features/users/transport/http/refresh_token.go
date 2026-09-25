@@ -10,6 +10,18 @@ import (
 	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
 )
 
+type RefreshTokenResponse ResponseLoginDTO
+
+// RefreshToken godoc
+// @Summary 	 Refresh token
+// @Description  Refresh authorization token
+// @Tags 		 user
+// @Produce 	 json
+// @Success 	 200 {object} RefreshTokenResponse "Succesfully refreshed token"
+// @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	 404 {object} http_response.ErrorResponse "Not found"
+// @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"
+// @Router 		 /auth/refresh [post]
 func (h *usersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -47,6 +59,6 @@ func (h *usersHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
 		Path:     "/api/v1/auth",
 	})
 
-	response := LoginDTOFromService(serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt)
+	response := RefreshTokenResponse(LoginDTOFromService(serviceResponse.AccessToken, serviceResponse.AccessTokenExpiresAt))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }

@@ -23,8 +23,20 @@ import (
 	tasks_service "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/service"
 	tasks_transport_http "github.com/Akimpupupuu/ClearYourCity/task-service/internal/feature/tasks/transport/http"
 	"github.com/go-chi/chi"
+
+	_ "github.com/Akimpupupuu/ClearYourCity/task-service/docs"
 )
 
+// @title 		ClearYourCity task-service
+// @version 	1.0
+// @description ClearYourCity task-service REST-API schema
+// @host 		127.0.0.1:5051
+// @BasePath 	/api/v1
+
+// @securityDefinitions.apikey  Auth
+// @in                          header
+// @name                        Authorization
+// @description                 Enter the token in format: Bearer <your token>
 func main() {
 	if err := run(); err != nil {
 		log.Fatalf("critical application error: %v", err)
@@ -55,9 +67,6 @@ func run() error {
 		return fmt.Errorf("failed to init postgres connection pool: %w", err)
 	}
 	defer pool.Close()
-
-	// logger.Debug("initializing transaction manager")
-	// transactionManager := core_postgres_transaction.NewTransactionManager(pool.Pool)
 
 	logger.Debug("initializing token generator")
 	tokenGenerator := core_jwt.NewTokenGenerator(core_jwt.NewConfigMust())

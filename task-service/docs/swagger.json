@@ -1,7 +1,473 @@
 {
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "ClearYourCity task-service REST-API schema",
+        "title": "ClearYourCity task-service",
+        "contact": {},
+        "version": "1.0"
     },
-    "paths": {}
+    "host": "127.0.0.1:5051",
+    "basePath": "/api/v1",
+    "paths": {
+        "/task": {
+            "get": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Get all user's tasks with optional pagination",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Get tasks",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Size of page with tasks",
+                        "name": "limit",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Offset of page with tasks",
+                        "name": "offset",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succesfully got list of tasks",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/internal_feature_tasks_transport_http.TaskResponseDTO"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Create new task in our system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Create task",
+                "parameters": [
+                    {
+                        "description": "CreateTask request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_feature_tasks_transport_http.CreateTaskRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Succesfully created task",
+                        "schema": {
+                            "$ref": "#/definitions/internal_feature_tasks_transport_http.CreateTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/status": {
+            "patch": {
+                "description": "Patch task's status",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Patch status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Identification token of the task",
+                        "name": "token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "New status of the task",
+                        "name": "status",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succesfully patched task",
+                        "schema": {
+                            "$ref": "#/definitions/internal_feature_tasks_transport_http.PatchStatusResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/task/{id}": {
+            "patch": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Patch task in our system",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "task"
+                ],
+                "summary": "Patch task",
+                "parameters": [
+                    {
+                        "description": "PatchTask request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_feature_tasks_transport_http.PatchTaskRequest"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "ID of the patching task",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Succesfully patched task",
+                        "schema": {
+                            "$ref": "#/definitions/internal_feature_tasks_transport_http.PatchTaskResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "github_com_Akimpupupuu_ClearYourCity_task-service_internal_core_transport_http_response.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "short human-readable message"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "full error text"
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.CreateTaskRequest": {
+            "type": "object",
+            "required": [
+                "description",
+                "title"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 10,
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Мусор"
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.CreateTaskResponse": {
+            "type": "object",
+            "properties": {
+                "comleted_at": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-08-29T18:51:08.085831Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "status": {
+                    "type": "string",
+                    "example": "created"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Мусор"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "version": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.PatchStatusResponse": {
+            "type": "object",
+            "properties": {
+                "comleted_at": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-08-29T18:51:08.085831Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "status": {
+                    "type": "string",
+                    "example": "created"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Мусор"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "version": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.PatchTaskRequest": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 1000,
+                    "minLength": 10,
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "title": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 3,
+                    "example": "Мусор"
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.PatchTaskResponse": {
+            "type": "object",
+            "properties": {
+                "comleted_at": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-08-29T18:51:08.085831Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "status": {
+                    "type": "string",
+                    "example": "created"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Мусор"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "version": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        },
+        "internal_feature_tasks_transport_http.TaskResponseDTO": {
+            "type": "object",
+            "properties": {
+                "comleted_at": {
+                    "type": "string",
+                    "example": "null"
+                },
+                "created_at": {
+                    "type": "string",
+                    "example": "2026-08-29T18:51:08.085831Z"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Мусор около дома по адресу: ул. Пушкина. д. 2"
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 2
+                },
+                "status": {
+                    "type": "string",
+                    "example": "created"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "Мусор"
+                },
+                "user_id": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "version": {
+                    "type": "integer",
+                    "example": 1
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Auth": {
+            "description": "Enter the token in format: Bearer \u003cyour token\u003e",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    }
 }

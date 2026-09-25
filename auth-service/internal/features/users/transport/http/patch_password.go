@@ -12,10 +12,23 @@ import (
 )
 
 type PatchPasswordRequest struct {
-	OldPassword string `json:"old_password" validate:"required"`
-	NewPassword string `json:"new_password" validate:"required,min=8"`
+	OldPassword string `json:"old_password" validate:"required" example:"ivan1111"`
+	NewPassword string `json:"new_password" validate:"required,min=8" example:"ivan1234"`
 }
 
+// PatchPassword godoc
+// @Summary 	 Patch password
+// @Description  Patch user's password
+// @Tags 		 user
+// @Accept 		 json
+// @Param 		 request body PatchPasswordRequest true "Patch password request body"
+// @Success 	 204 "Succesfully patched user's password"
+// @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	 409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"
+// @Security     Auth
+// @Router 		 /auth/patch_password [patch]
 func (h *usersHandler) PatchPassword(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)

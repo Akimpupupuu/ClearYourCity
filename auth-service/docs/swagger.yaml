@@ -1,4 +1,387 @@
+basePath: /api/v1
+definitions:
+  github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse:
+    properties:
+      error:
+        example: short human-readable message
+        type: string
+      message:
+        example: full error text
+        type: string
+    type: object
+  internal_features_users_transport_http.GetUserResponse:
+    properties:
+      created_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+      email:
+        example: ivan@gmail.com
+        type: string
+      full_name:
+        example: Иван
+        type: string
+      id:
+        example: 1
+        type: integer
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_users_transport_http.LoginRequest:
+    properties:
+      email:
+        example: ivan@gmail.com
+        maxLength: 100
+        minLength: 5
+        type: string
+      password:
+        example: ivan1234
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  internal_features_users_transport_http.LoginResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFraW0iLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTgyNjIzOTAyMn0.bFp3dThEamI3SjFza0FFbF9MUDJiWDF5YmNLdzVVY2E1eXQ4N0xfNDJnNA
+        type: string
+      access_token_expires_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+    type: object
+  internal_features_users_transport_http.PatchPasswordRequest:
+    properties:
+      new_password:
+        example: ivan1234
+        minLength: 8
+        type: string
+      old_password:
+        example: ivan1111
+        type: string
+    required:
+    - new_password
+    - old_password
+    type: object
+  internal_features_users_transport_http.PatchUserRequest:
+    properties:
+      email:
+        example: ivan@gmail.com
+        maxLength: 100
+        minLength: 5
+        type: string
+      full_name:
+        example: Иван Иванов
+        maxLength: 100
+        minLength: 3
+        type: string
+    type: object
+  internal_features_users_transport_http.PatchUserResponse:
+    properties:
+      created_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+      email:
+        example: ivan@gmail.com
+        type: string
+      full_name:
+        example: Иван
+        type: string
+      id:
+        example: 1
+        type: integer
+      version:
+        example: 2
+        type: integer
+    type: object
+  internal_features_users_transport_http.RefreshTokenResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFraW0iLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTgyNjIzOTAyMn0.bFp3dThEamI3SjFza0FFbF9MUDJiWDF5YmNLdzVVY2E1eXQ4N0xfNDJnNA
+        type: string
+      access_token_expires_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+    type: object
+  internal_features_users_transport_http.RegisterResponse:
+    properties:
+      access_token:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFraW0iLCJpYXQiOjE1MTYyMzkwMjIsImV4cCI6MTgyNjIzOTAyMn0.bFp3dThEamI3SjFza0FFbF9MUDJiWDF5YmNLdzVVY2E1eXQ4N0xfNDJnNA
+        type: string
+      access_token_expires_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+      user:
+        $ref: '#/definitions/internal_features_users_transport_http.ResponseUserDTO'
+    type: object
+  internal_features_users_transport_http.RegisterUserRequest:
+    properties:
+      email:
+        example: ivan@gmail.com
+        maxLength: 100
+        minLength: 5
+        type: string
+      full_name:
+        example: Иван Иванов
+        maxLength: 100
+        minLength: 3
+        type: string
+      password:
+        example: ivan1234
+        minLength: 8
+        type: string
+    required:
+    - email
+    - full_name
+    - password
+    type: object
+  internal_features_users_transport_http.ResponseUserDTO:
+    properties:
+      created_at:
+        example: "2026-08-29T18:51:08.085831Z"
+        type: string
+      email:
+        example: ivan@gmail.com
+        type: string
+      full_name:
+        example: Иван
+        type: string
+      id:
+        example: 1
+        type: integer
+      version:
+        example: 2
+        type: integer
+    type: object
+host: 127.0.0.1:5050
 info:
   contact: {}
-paths: {}
+  description: ClearYourCity auth-service REST-API schema
+  title: ClearYourCity auth-service
+  version: "1.0"
+paths:
+  /auth/:
+    get:
+      description: Get user's data
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succesfully got user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.GetUserResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - Auth: []
+      summary: Get user
+      tags:
+      - user
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Log in user in our system
+      parameters:
+      - description: Login user request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succesfully loged in user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.LoginResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      summary: Log in user
+      tags:
+      - user
+  /auth/logout:
+    post:
+      description: Log out user from the system
+      responses:
+        "204":
+          description: Succesfully loged out user
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      summary: Log out user
+      tags:
+      - user
+  /auth/patch_password:
+    patch:
+      consumes:
+      - application/json
+      description: Patch user's password
+      parameters:
+      - description: Patch password request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchPasswordRequest'
+      responses:
+        "204":
+          description: Succesfully patched user's password
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - Auth: []
+      summary: Patch password
+      tags:
+      - user
+  /auth/patch_user:
+    patch:
+      consumes:
+      - application/json
+      description: Patch user
+      parameters:
+      - description: Patch user request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.PatchUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succesfully patched user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.PatchUserResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      security:
+      - Auth: []
+      summary: Patch user
+      tags:
+      - user
+  /auth/refresh:
+    post:
+      description: Refresh authorization token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Succesfully refreshed token
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.RefreshTokenResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      summary: Refresh token
+      tags:
+      - user
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user in our system
+      parameters:
+      - description: Register user request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/internal_features_users_transport_http.RegisterUserRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Succesfully registered user
+          schema:
+            $ref: '#/definitions/internal_features_users_transport_http.RegisterResponse'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/github_com_Akimpupupuu_ClearYourCity_auth-service_internal_core_transport_http_response.ErrorResponse'
+      summary: Register user
+      tags:
+      - user
+securityDefinitions:
+  Auth:
+    description: 'Enter the token in format: Bearer <your token>'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

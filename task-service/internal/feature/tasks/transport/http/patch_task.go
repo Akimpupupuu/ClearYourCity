@@ -15,10 +15,28 @@ import (
 const taskIDPathValue = "id"
 
 type PatchTaskRequest struct {
-	Title       *string `json:"title" validate:"omitempty,min=3,max=100"`
-	Description *string `json:"description" validate:"omitempty,min=10,max=1000"`
+	Title       *string `json:"title" validate:"omitempty,min=3,max=100" example:"Мусор"`
+	Description *string `json:"description" validate:"omitempty,min=10,max=1000" example:"Мусор около дома по адресу: ул. Пушкина. д. 2"`
 }
 
+type PatchTaskResponse TaskResponseDTO
+
+// PatchTask 	godoc
+// @Summary 	Patch task
+// @Description Patch task in our system
+// @Tags 		task
+// @Accept 		json
+// @Produce 	json
+// @Param 		request body PatchTaskRequest true "PatchTask request body"
+// @Param      	id path int true "ID of the patching task"
+// @Success 	200 {object} PatchTaskResponse "Succesfully patched task"
+// @Failure 	400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	404 {object} http_response.ErrorResponse "Not found"
+// @Failure 	409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Security    Auth
+// @Router 		/task/{id} [patch]
 func (h *tasksHandler) PatchTask(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -51,6 +69,6 @@ func (h *tasksHandler) PatchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := dtoFromDomain(task)
+	response := PatchTaskResponse(dtoFromDomain(task))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }

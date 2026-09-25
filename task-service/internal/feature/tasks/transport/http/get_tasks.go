@@ -11,6 +11,21 @@ import (
 	http_response "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/transport/http/response"
 )
 
+type GetTasksResponse []TaskResponseDTO
+
+// GetTasks 	godoc
+// @Summary 	Get tasks
+// @Description Get all user's tasks with optional pagination
+// @Tags 		task
+// @Produce 	json
+// @Param 		limit query int false "Size of page with tasks"
+// @Param 		offset query int false "Offset of page with tasks"
+// @Success 	200 {object} GetTasksResponse "Succesfully got list of tasks"
+// @Failure 	400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
+// @Security    Auth
+// @Router 		/task [get]
 func (h *tasksHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
@@ -35,7 +50,7 @@ func (h *tasksHandler) GetTasks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := dtoFromDomains(tasks)
+	response := GetTasksResponse(dtoFromDomains(tasks))
 	responseHandler.JsonResponse(response, http.StatusOK)
 }
 
