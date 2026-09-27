@@ -101,6 +101,16 @@ services:
       - ${PROJECT_ROOT}/out/task/redisdata:/data
     command: redis-server --appendonly yes --requirepass ${TASK_REDIS_PASSWORD}
     restart: always
+  
+  task-redis-ui:
+    image: redis/redisinsight:3.8
+    container_name: task-redis-ui
+    ports:
+      - "5540:5540"
+    volumes:
+      - ${PROJECT_ROOT}/out/task/redis_ui_data:/data
+    restart: always
+
 
   task-kafka:
     image: confluentinc/cp-kafka:8.0.7

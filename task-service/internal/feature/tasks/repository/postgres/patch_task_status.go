@@ -15,15 +15,16 @@ func (r *tasksRepository) PatchStatus(ctx context.Context, task *core_domain.Tas
 	defer cancel()
 
 	query := `
-	UPDATE task_service.tasks
+	UPDATE task_service.task
 	SET 
 		status = $1,
+		completed_at = $2,
 		version = version+1
-	WHERE id = $2 AND version = $3
+	WHERE id = $3 AND version = $4
 	RETURNING id, version, user_id, title, description, status, created_at, completed_at;
 	`
 
-	row := r.pool.QueryRow(ctx, query, task.Status, task.ID, task.Version)
+	row := r.pool.QueryRow(ctx, query, task.Status, task.CompletedAt, task.ID, task.Version)
 
 	var taskModel TaskModel
 	if err := row.Scan(

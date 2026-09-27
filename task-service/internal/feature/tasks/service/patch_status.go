@@ -24,11 +24,9 @@ func (s *tasksService) PatchStatus(ctx context.Context, status string, token str
 		return nil, fmt.Errorf("get task from repository: %w", err)
 	}
 
-	if task.Status == statusDomain {
-		return task, nil
+	if err = task.ApplyStatusPatch(statusDomain); err != nil {
+		return nil, fmt.Errorf("apply status patch: %w", err)
 	}
-
-	task.Status = statusDomain
 
 	task, err = s.tasksRepository.PatchStatus(ctx, task)
 	if err != nil {
