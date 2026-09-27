@@ -5,10 +5,10 @@ export
 export PROJECT_ROOT=$(shell pwd)
 
 env-up:
-	@docker compose up -d auth-service-postgres task-service-postgres task-redis task-kafka
+	@docker compose up -d auth-service-postgres task-service-postgres task-redis task-kafka task-kafka-ui
 
 env-down:
-	@docker compose down auth-service-postgres task-service-postgres task-redis task-kafka
+	@docker compose down auth-service-postgres task-service-postgres task-redis task-kafka task-kafka-ui
 
 env-cleanup:
 	@docker compose down auth-service-postgres task-service-postgres task-redis task-kafka && \

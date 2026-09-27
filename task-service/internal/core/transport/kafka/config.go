@@ -7,7 +7,10 @@ import (
 )
 
 type Config struct {
-	Brokers []string `envconfig:"BROKERS" default:"localhost:9092"`
+	Brokers           []string `envconfig:"BROKERS" default:"localhost:9092"`
+	Topics            []string `envconfig:"TOPICS" required:"true"`
+	NumPartitions     int      `envconfig:"NUM_PARTITIONS" default:"1"`
+	ReplicationFactor int      `envconfig:"REPLICATION_FACTOR" default:"1"`
 }
 
 func NewConfig() (Config, error) {
