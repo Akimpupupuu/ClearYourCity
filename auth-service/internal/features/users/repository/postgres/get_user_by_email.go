@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func (r *usersRepository) GetUserByEmail(ctx context.Context, email string) (core_domain.User, error) {
+func (r *usersRepository) GetUserByEmail(ctx context.Context, email string) (*core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 
@@ -32,12 +32,12 @@ func (r *usersRepository) GetUserByEmail(ctx context.Context, email string) (cor
 		&userModel.CreatedAt,
 	); err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return core_domain.User{}, fmt.Errorf("user with email = '%s': %w", email, core_errors.ErrNotFound)
+			return nil, fmt.Errorf("user with email = '%s': %w", email, core_errors.ErrNotFound)
 		}
 
-		return core_domain.User{}, fmt.Errorf("scan user: %w", err)
+		return nil, fmt.Errorf("scan user: %w", err)
 	}
 
-	userDomain := DomainFromModel(userModel)
+	userDomain := domainFromModel(userModel)
 	return userDomain, nil
 }

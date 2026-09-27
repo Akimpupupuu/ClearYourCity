@@ -4,20 +4,41 @@ import (
 	"net/http"
 
 	core_domain "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/domain"
+	core_errors "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/errors"
 	core_logger "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/logger"
 	http_request "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/request"
 	http_response "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/core/transport/http/response"
+	sessions_jwt "github.com/Akimpupupuu/ClearYourCity/auth-service/internal/features/sessions/jwt"
 )
 
 type PatchPasswordRequest struct {
-	OldPassword string `json:"old_password" validate:"required"`
-	NewPassword string `json:"new_password" validate:"required,min=8"`
+	OldPassword string `json:"old_password" validate:"required" example:"ivan1111"`
+	NewPassword string `json:"new_password" validate:"required,min=8" example:"ivan1234"`
 }
 
+// PatchPassword godoc
+// @Summary 	 Patch password
+// @Description  Patch user's password
+// @Tags 		 user
+// @Accept 		 json
+// @Param 		 request body PatchPasswordRequest true "Patch password request body"
+// @Success 	 204 "Succesfully patched user's password"
+// @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
+// @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
+// @Failure 	 409 {object} http_response.ErrorResponse "Conflict"
+// @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"
+// @Security     Auth
+// @Router 		 /auth/patch_password [patch]
 func (h *usersHandler) PatchPassword(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := core_logger.FromContext(ctx)
 	responseHandler := http_response.NewResponseHandler(log, w)
+
+	claims, ok := sessions_jwt.FromContext(ctx)
+	if !ok {
+		responseHandler.ErrorResponse(core_errors.ErrUnauthorized, "failed to get token claims")
+		return
+	}
 
 	var request PatchPasswordRequest
 	if err := http_request.DecodeAndValidate(r, &request); err != nil {
@@ -27,7 +48,7 @@ func (h *usersHandler) PatchPassword(w http.ResponseWriter, r *http.Request) {
 
 	patchPasswordCommand := core_domain.NewPatchPasswordCommand(request.OldPassword, request.NewPassword)
 
-	if err := h.usersService.PatchPassword(ctx, patchPasswordCommand); err != nil {
+	if err := h.usersService.PatchPassword(ctx, claims.UserID, patchPasswordCommand); err != nil {
 		responseHandler.ErrorResponse(err, "failed to patch password")
 		return
 	}

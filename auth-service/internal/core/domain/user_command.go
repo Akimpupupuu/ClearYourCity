@@ -109,27 +109,3 @@ func (c *PatchPasswordCommand) Validate() error {
 
 	return nil
 }
-
-func (c *PatchUserCommand) Validate() error {
-	if c.FullName != nil {
-		fullNameLength := len([]rune(*c.FullName))
-
-		if fullNameLength < 3 || fullNameLength > 100 {
-			return fmt.Errorf("invalid 'fullName' length: %d: %w", fullNameLength, core_errors.ErrInvalidArgument)
-		}
-	}
-
-	if c.Email != nil {
-		emailLength := len([]rune(*c.Email))
-
-		if emailLength < 5 || emailLength > 100 {
-			return fmt.Errorf("invalid 'email' length: %d: %w", emailLength, core_errors.ErrInvalidArgument)
-		}
-
-		if !RegularExpression.MatchString(*c.Email) {
-			return fmt.Errorf("invalid 'email' format: %w", core_errors.ErrInvalidArgument)
-		}
-	}
-
-	return nil
-}

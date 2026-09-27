@@ -14,11 +14,11 @@ type usersService struct {
 }
 
 type UsersRepository interface {
-	CreateUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
-	GetUserByEmail(ctx context.Context, email string) (core_domain.User, error)
-	GetUserByID(ctx context.Context, userID int) (core_domain.User, error)
-	PatchPassword(ctx context.Context, user core_domain.User) error
-	PatchUser(ctx context.Context, user core_domain.User) (core_domain.User, error)
+	CreateUser(ctx context.Context, user *core_domain.User) (*core_domain.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*core_domain.User, error)
+	GetUserByID(ctx context.Context, userID int) (*core_domain.User, error)
+	PatchPassword(ctx context.Context, user *core_domain.User) error
+	PatchUser(ctx context.Context, user *core_domain.User) (*core_domain.User, error)
 }
 
 type SessionsService interface {

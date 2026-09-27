@@ -11,7 +11,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
-func (r *usersRepository) PatchUser(ctx context.Context, user core_domain.User) (core_domain.User, error) {
+func (r *usersRepository) PatchUser(ctx context.Context, user *core_domain.User) (*core_domain.User, error) {
 	ctx, cancel := context.WithTimeout(ctx, r.pool.OpTimeout)
 	defer cancel()
 
@@ -39,17 +39,17 @@ func (r *usersRepository) PatchUser(ctx context.Context, user core_domain.User) 
 		var pgErr *pgconn.PgError
 		if errors.As(err, &pgErr) {
 			if pgErr.Code == pgxViolatesUniqueErrorCode {
-				return core_domain.User{}, fmt.Errorf("%v: user with email = '%s': %w", err, user.Email, core_errors.ErrConflict)
+				return nil, fmt.Errorf("%v: user with email = '%s': %w", err, user.Email, core_errors.ErrConflict)
 			}
 		}
 
 		if errors.Is(err, pgx.ErrNoRows) {
-			return core_domain.User{}, fmt.Errorf("user with id = '%d' concurrently accessed: %w", user.ID, core_errors.ErrConflict)
+			return nil, fmt.Errorf("user with id = '%d' concurrently accessed: %w", user.ID, core_errors.ErrConflict)
 		}
 
-		return core_domain.User{}, fmt.Errorf("scan user: %w", err)
+		return nil, fmt.Errorf("scan user: %w", err)
 	}
 
-	userDomain := DomainFromModel(userModel)
+	userDomain := domainFromModel(userModel)
 	return userDomain, nil
 }

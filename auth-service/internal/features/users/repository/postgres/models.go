@@ -15,7 +15,7 @@ type UserModel struct {
 	CreatedAt      time.Time
 }
 
-func DomainFromModel(model UserModel) core_domain.User {
+func domainFromModel(model UserModel) *core_domain.User {
 	return core_domain.NewUser(
 		model.ID,
 		model.Version,
