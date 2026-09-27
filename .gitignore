@@ -1,2 +1,4 @@
 .env
 out
+auth-service/docs
+task-service/docs
