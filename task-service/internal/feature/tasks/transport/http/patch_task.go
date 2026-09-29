@@ -55,6 +55,12 @@ func (h *tasksHandler) PatchTask(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if taskID <= 0 {
+		err = fmt.Errorf("invalid id: %w", core_errors.ErrInvalidArgument)
+		responseHandler.ErrorResponse(err, "failed to patch task")
+		return
+	}
+
 	var request PatchTaskRequest
 	if err := http_request.DecodeAndValidate(r, &request); err != nil {
 		responseHandler.ErrorResponse(err, "decode and validate HTTP request")

@@ -5,17 +5,18 @@ export
 export PROJECT_ROOT=$(shell pwd)
 
 env-up:
-	@docker compose up -d auth-service-postgres task-service-postgres task-redis task-kafka
+	@docker compose up -d auth-service-postgres task-service-postgres task-redis task-redis-ui task-kafka task-kafka-ui
 
 env-down:
-	@docker compose down auth-service-postgres task-service-postgres task-redis task-kafka
+	@docker compose down auth-service-postgres task-service-postgres task-redis task-redis-ui task-kafka task-kafka-ui
 
 env-cleanup:
 	@docker compose down auth-service-postgres task-service-postgres task-redis task-kafka && \
 	sudo rm -rf ${PROJECT_ROOT}/out/auth/pgdata/* && \
 	sudo rm -rf ${PROJECT_ROOT}/out/task/pgdata/* && \
 	sudo rm -rf ${PROJECT_ROOT}/out/task/kafkadata/* && \
-	sudo rm -rf ${PROJECT_ROOT}/out/task/redisdata/*
+	sudo rm -rf ${PROJECT_ROOT}/out/task/redisdata/* && \
+	sudo rm -rf ${PROJECT_ROOT}/out/task/redis_ui_data/*
 
 migrate-create-auth:
 	@if [ -z "$(seq)" ]; then \

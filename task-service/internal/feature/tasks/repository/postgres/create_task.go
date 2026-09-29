@@ -22,7 +22,7 @@ func (r *tasksRepository) CreateTask(ctx context.Context, task *core_domain.Task
 	}()
 
 	taskQuery := `
-	INSERT 	INTO task_service.task (user_id, title, description, status, created_at, completed_at)
+	INSERT INTO task_service.task (user_id, title, description, status, created_at, completed_at)
 	VALUES ($1, $2, $3, $4, $5, $6)
 	RETURNING id, version, user_id, title, description, status, created_at, completed_at;
 	`

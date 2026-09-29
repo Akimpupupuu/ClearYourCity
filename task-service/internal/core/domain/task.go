@@ -91,6 +91,10 @@ func (t *Task) Validate() error {
 }
 
 func (t *Task) ApplyPatch(title *string, description *string) error {
+	if t.Status != StatusCreated {
+		return fmt.Errorf("you can modify task only in status: %s, current status: %s: %w", StatusCreated, t.Status, core_errors.ErrInvalidArgument)
+	}
+
 	tmp := *t
 
 	if title != nil {
@@ -99,6 +103,47 @@ func (t *Task) ApplyPatch(title *string, description *string) error {
 
 	if description != nil {
 		tmp.Description = *description
+	}
+
+	if err := tmp.Validate(); err != nil {
+		return fmt.Errorf("validate task: %w", err)
+	}
+
+	*t = tmp
+	return nil
+}
+
+var allowedTransitions = map[status]map[status]bool{
+	StatusCreated: {
+		StatusInProgress: true,
+		StatusRejected:   true,
+	},
+	StatusInProgress: {
+		StatusDone:     true,
+		StatusRejected: true,
+	},
+	StatusDone:     {},
+	StatusRejected: {},
+}
+
+func (t *Task) ApplyStatusPatch(status status) error {
+	if t.Status == status {
+		return fmt.Errorf("status of the task is already: %s: %w", t.Status, core_errors.ErrInvalidArgument)
+	}
+
+	values, exists := allowedTransitions[t.Status]
+	if !exists || !values[status] {
+		return fmt.Errorf("transition from: %s to: %s is not allowed: %w", t.Status, status, core_errors.ErrInvalidArgument)
+	}
+
+	tmp := *t
+
+	if status == StatusDone || status == StatusRejected {
+		completedAt := time.Now()
+		tmp.Status = status
+		tmp.CompletedAt = &completedAt
+	} else {
+		tmp.Status = status
 	}
 
 	if err := tmp.Validate(); err != nil {
