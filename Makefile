@@ -3,6 +3,7 @@ include task-service/.env
 export
 
 export PROJECT_ROOT=$(shell pwd)
+export PATH := $(shell go env GOPATH)/bin:$(PATH)
 
 env-up:
 	@docker compose up -d auth-service-postgres task-service-postgres task-redis task-redis-ui task-kafka task-kafka-ui
@@ -97,3 +98,20 @@ task-deploy:
 
 task-undeploy:
 	@docker compose down task-service
+
+test-task:
+	@go test -C task-service -v -count=1 ./...
+race-task:
+	@go test -C task-service -v -race -count=1 ./...
+cover-task:
+	@cd task-service && \
+	go test -short -coverprofile=coverage.out ./... && \
+	go tool cover -html=coverage.out && \
+	rm coverage.out
+
+gen-task-mock:
+	@cd task-service && \
+	mockgen \
+	-source=internal/feature/tasks/service/service.go \
+	-destination=internal/feature/tasks/service/mocks/repository_mock.go
+
