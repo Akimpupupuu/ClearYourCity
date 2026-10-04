@@ -14,7 +14,7 @@ type TaskResponseDTO struct {
 	Description string     `json:"description" example:"Мусор около дома по адресу: ул. Пушкина. д. 2"`
 	Status      string     `json:"status" example:"created"`
 	CreatedAt   time.Time  `json:"created_at" example:"2026-08-29T18:51:08.085831Z"`
-	CompletedAt *time.Time `json:"comleted_at" example:"null"`
+	CompletedAt *time.Time `json:"completed_at" example:"null"`
 }
 
 func dtoFromDomain(task *core_domain.Task) TaskResponseDTO {

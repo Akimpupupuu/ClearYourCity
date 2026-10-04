@@ -13,6 +13,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// it is better to use setup mocks
 type testCreateTaskInput struct {
 	name        string
 	input       *core_domain.Task

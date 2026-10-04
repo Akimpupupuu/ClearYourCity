@@ -14,6 +14,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// it is better to use setup mocks
 type testGetTasksInput struct {
 	name        string
 	userID      int
