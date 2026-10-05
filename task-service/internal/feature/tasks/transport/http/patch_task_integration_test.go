@@ -82,7 +82,7 @@ func TestPatchTask(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -126,7 +126,7 @@ func TestPatchTaskNoClaims(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -173,7 +173,7 @@ func TestPatchTaskInvalidPathValueString(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -220,7 +220,7 @@ func TestPatchTaskInvalidPathValue(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -267,7 +267,7 @@ func TestPatchTaskDecodeError(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -314,7 +314,7 @@ func TestPatchTaskValidationError(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -364,7 +364,7 @@ func TestPatchTaskServiceError(t *testing.T) {
 	handler.PatchTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)

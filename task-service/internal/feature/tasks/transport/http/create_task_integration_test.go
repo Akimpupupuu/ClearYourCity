@@ -67,7 +67,7 @@ func TestCreateTask(t *testing.T) {
 	handler.CreateTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -106,7 +106,7 @@ func TestCreateTaskNoClaims(t *testing.T) {
 	handler.CreateTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -149,7 +149,7 @@ func TestCreateTaskDecodeError(t *testing.T) {
 	handler.CreateTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -192,7 +192,7 @@ func TestCreateTaskValidationError(t *testing.T) {
 	handler.CreateTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -236,7 +236,7 @@ func TestCreateTaskServiceError(t *testing.T) {
 	handler.CreateTask(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)

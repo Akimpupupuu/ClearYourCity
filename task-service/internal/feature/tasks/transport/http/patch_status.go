@@ -19,7 +19,7 @@ type PatchStatusResponse TaskResponseDTO
 // @Produce 	json
 // @Param 		token query string true "Identification token of the task"
 // @Param 		status query string true "New status of the task"
-// @Success 	200 {object} PatchStatusResponse "Succesfully patched task"
+// @Success 	200 {object} PatchStatusResponse "Successfully patched task"
 // @Failure 	400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	404 {object} http_response.ErrorResponse "Not found"
 // @Failure 	409 {object} http_response.ErrorResponse "Conflict"

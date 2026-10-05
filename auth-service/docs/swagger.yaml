@@ -168,7 +168,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully got user
+          description: Successfully got user
           schema:
             $ref: '#/definitions/internal_features_users_transport_http.GetUserResponse'
         "401":
@@ -200,7 +200,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully loged in user
+          description: Successfully loged in user
           schema:
             $ref: '#/definitions/internal_features_users_transport_http.LoginResponse'
         "400":
@@ -227,7 +227,7 @@ paths:
       description: Log out user from the system
       responses:
         "204":
-          description: Succesfully loged out user
+          description: Successfully loged out user
         "401":
           description: Unauthorized
           schema:
@@ -253,7 +253,7 @@ paths:
           $ref: '#/definitions/internal_features_users_transport_http.PatchPasswordRequest'
       responses:
         "204":
-          description: Succesfully patched user's password
+          description: Successfully patched user's password
         "400":
           description: Bad request
           schema:
@@ -291,7 +291,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully patched user
+          description: Successfully patched user
           schema:
             $ref: '#/definitions/internal_features_users_transport_http.PatchUserResponse'
         "400":
@@ -322,7 +322,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully refreshed token
+          description: Successfully refreshed token
           schema:
             $ref: '#/definitions/internal_features_users_transport_http.RefreshTokenResponse'
         "401":
@@ -356,7 +356,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: Succesfully registered user
+          description: Successfully registered user
           schema:
             $ref: '#/definitions/internal_features_users_transport_http.RegisterResponse'
         "400":

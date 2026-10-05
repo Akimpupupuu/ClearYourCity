@@ -84,7 +84,7 @@ func run() error {
 	redisRepository := tasks_redis.NewTasksRedis(redis)
 
 	logger.Debug("initializing kafka producer")
-	producer, err := core_kafka.NewProducer(ctx, core_kafka.NewConfigMust())
+	producer, err := core_kafka.NewProducer(ctx, core_kafka.NewConfigMust(), logger)
 	if err != nil {
 		return fmt.Errorf("failed to init kafka producer: %w", err)
 	}

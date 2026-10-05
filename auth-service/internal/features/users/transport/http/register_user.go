@@ -28,7 +28,7 @@ type RegisterResponse ResponseRegisterDTO
 // @Accept		 json
 // @Produce 	 json
 // @Param 		 request body RegisterUserRequest true "Register user request body"
-// @Success 	 201 {object} RegisterResponse "Succesfully registered user"
+// @Success 	 201 {object} RegisterResponse "Successfully registered user"
 // @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	 404 {object} http_response.ErrorResponse "Not found"
 // @Failure 	 409 {object} http_response.ErrorResponse "Conflict"

@@ -22,7 +22,7 @@ type PatchPasswordRequest struct {
 // @Tags 		 user
 // @Accept 		 json
 // @Param 		 request body PatchPasswordRequest true "Patch password request body"
-// @Success 	 204 "Succesfully patched user's password"
+// @Success 	 204 "Successfully patched user's password"
 // @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	 409 {object} http_response.ErrorResponse "Conflict"

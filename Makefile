@@ -115,3 +115,7 @@ gen-task-mock:
 	-source=internal/feature/tasks/service/service.go \
 	-destination=internal/feature/tasks/service/mocks/repository_mock.go
 
+lint:
+	@cd task-service && golangci-lint run
+	@cd auth-service && golangci-lint run
+

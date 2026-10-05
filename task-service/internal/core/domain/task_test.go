@@ -134,7 +134,7 @@ func TestValidate(t *testing.T) {
 		{
 			"fail: invalid combination of createdAt and completedAt: createdAt > completedAt",
 			NewTask(taskID, version, userID, title, description, StatusDone, createdAt, &completedAtInvalid),
-			fmt.Errorf("invalid complition time: invalid argument"),
+			fmt.Errorf("invalid completion time: invalid argument"),
 		},
 	}
 
@@ -298,7 +298,7 @@ func TestApplyStatusPatch(t *testing.T) {
 		{
 			"fail: validation error",
 			NewTask(taskID, version, userID, title, description, StatusCreated, invalidCreatedAt, nil),
-			fmt.Errorf("validate task: invalid complition time: invalid argument"),
+			fmt.Errorf("validate task: invalid completion time: invalid argument"),
 		},
 	}
 

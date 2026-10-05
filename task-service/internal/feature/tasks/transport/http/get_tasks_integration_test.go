@@ -74,7 +74,7 @@ func TestGetTasks(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -125,7 +125,7 @@ func TestGetTasksNilQueryParams(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -166,7 +166,7 @@ func TestGetTasksNoClaims(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -206,7 +206,7 @@ func TestGetTasksInvalidLimitQueryParam(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -246,7 +246,7 @@ func TestGetTasksInvalidOffsetQueryParam(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -286,7 +286,7 @@ func TestGetTasksValidateLimitQueryParamError(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -326,7 +326,7 @@ func TestGetTasksValidateOffsetQueryParamError(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -368,7 +368,7 @@ func TestGetTasksServiceError(t *testing.T) {
 	handler.GetTasks(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)

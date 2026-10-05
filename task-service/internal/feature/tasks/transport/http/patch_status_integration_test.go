@@ -71,7 +71,7 @@ func TestPatchStatus(t *testing.T) {
 	handler.PatchStatus(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -111,7 +111,7 @@ func TestPatchStatusEmptyTokenError(t *testing.T) {
 	handler.PatchStatus(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -151,7 +151,7 @@ func TestPatchStatusEmptyStatusError(t *testing.T) {
 	handler.PatchStatus(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)
@@ -194,7 +194,7 @@ func TestPatchStatusServiceError(t *testing.T) {
 	handler.PatchStatus(rec, req)
 
 	result := rec.Result()
-	defer result.Body.Close()
+	defer func() { _ = result.Body.Close() }()
 
 	data, err := io.ReadAll(result.Body)
 	require.NoError(t, err)

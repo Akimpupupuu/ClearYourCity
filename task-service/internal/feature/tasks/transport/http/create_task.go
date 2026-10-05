@@ -26,7 +26,7 @@ type CreateTaskResponse TaskResponseDTO
 // @Accept 		json
 // @Produce 	json
 // @Param 		request body CreateTaskRequest true "CreateTask request body"
-// @Success 	201 {object} CreateTaskResponse "Succesfully created task"
+// @Success 	201 {object} CreateTaskResponse "Successfully created task"
 // @Failure 	400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	500 {object} http_response.ErrorResponse "Internal server error"

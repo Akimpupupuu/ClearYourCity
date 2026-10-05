@@ -25,7 +25,7 @@ type PatchUserResponse ResponseUserDTO
 // @Accept 		 json
 // @Produce 	 json
 // @Param 		 request body PatchUserRequest true "Patch user request body"
-// @Success 	 200 {object} PatchUserResponse "Succesfully patched user"
+// @Success 	 200 {object} PatchUserResponse "Successfully patched user"
 // @Failure 	 400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	 409 {object} http_response.ErrorResponse "Conflict"

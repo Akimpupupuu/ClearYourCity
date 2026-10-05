@@ -46,7 +46,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succesfully got list of tasks",
+                        "description": "Successfully got list of tasks",
                         "schema": {
                             "type": "array",
                             "items": {
@@ -104,7 +104,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Succesfully created task",
+                        "description": "Successfully created task",
                         "schema": {
                             "$ref": "#/definitions/internal_feature_tasks_transport_http.CreateTaskResponse"
                         }
@@ -158,7 +158,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succesfully patched task",
+                        "description": "Successfully patched task",
                         "schema": {
                             "$ref": "#/definitions/internal_feature_tasks_transport_http.PatchStatusResponse"
                         }
@@ -228,7 +228,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succesfully patched task",
+                        "description": "Successfully patched task",
                         "schema": {
                             "$ref": "#/definitions/internal_feature_tasks_transport_http.PatchTaskResponse"
                         }
@@ -305,7 +305,7 @@ const docTemplate = `{
         "internal_feature_tasks_transport_http.CreateTaskResponse": {
             "type": "object",
             "properties": {
-                "comleted_at": {
+                "completed_at": {
                     "type": "string",
                     "example": "null"
                 },
@@ -342,7 +342,7 @@ const docTemplate = `{
         "internal_feature_tasks_transport_http.PatchStatusResponse": {
             "type": "object",
             "properties": {
-                "comleted_at": {
+                "completed_at": {
                     "type": "string",
                     "example": "null"
                 },
@@ -396,7 +396,7 @@ const docTemplate = `{
         "internal_feature_tasks_transport_http.PatchTaskResponse": {
             "type": "object",
             "properties": {
-                "comleted_at": {
+                "completed_at": {
                     "type": "string",
                     "example": "null"
                 },
@@ -433,7 +433,7 @@ const docTemplate = `{
         "internal_feature_tasks_transport_http.TaskResponseDTO": {
             "type": "object",
             "properties": {
-                "comleted_at": {
+                "completed_at": {
                     "type": "string",
                     "example": "null"
                 },

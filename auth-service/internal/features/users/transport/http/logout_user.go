@@ -12,7 +12,7 @@ import (
 // @Summary 	Log out user
 // @Description Log out user from the system
 // @Tags 		user
-// @Success 	204 "Succesfully loged out user"
+// @Success 	204 "Successfully loged out user"
 // @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
 // @Router 		/auth/logout [post]

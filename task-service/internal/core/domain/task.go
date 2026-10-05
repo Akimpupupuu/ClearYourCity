@@ -83,7 +83,7 @@ func (t *Task) Validate() error {
 
 	if t.CompletedAt != nil {
 		if t.CreatedAt.After(*t.CompletedAt) {
-			return fmt.Errorf("invalid complition time: %w", core_errors.ErrInvalidArgument)
+			return fmt.Errorf("invalid completion time: %w", core_errors.ErrInvalidArgument)
 		}
 	}
 
