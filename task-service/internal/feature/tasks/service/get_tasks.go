@@ -23,14 +23,15 @@ func (s *tasksService) GetTasks(ctx context.Context, userID int, limit int, offs
 
 func validateLimitOffset(limit int, offset int) error {
 	const (
-		maxOffset = 100
+		maxLimit = 100
 	)
-	if limit < 0 {
-		return fmt.Errorf("'limit' must be non-negative value: %d: %w", limit, core_errors.ErrInvalidArgument)
+
+	if limit <= 0 || limit > maxLimit {
+		return fmt.Errorf("'limit' must be non-negative value and smaller then 100: %d: %w", limit, core_errors.ErrInvalidArgument)
 	}
 
-	if offset < 0 || offset > maxOffset {
-		return fmt.Errorf("'offset' must be non-negative value and smaller then 100: %d: %w", offset, core_errors.ErrInvalidArgument)
+	if offset < 0 {
+		return fmt.Errorf("'offset' must be non-negative value: %d: %w", offset, core_errors.ErrInvalidArgument)
 	}
 
 	return nil

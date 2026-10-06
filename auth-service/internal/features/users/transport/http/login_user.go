@@ -25,7 +25,7 @@ type LoginResponse ResponseLoginDTO
 // @Accept 		json
 // @Produce 	json
 // @Param 		request body LoginRequest true "Login user request body"
-// @Success 	200 {object} LoginResponse "Succesfully loged in user"
+// @Success 	200 {object} LoginResponse "Successfully loged in user"
 // @Failure 	400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	404 {object} http_response.ErrorResponse "Not found"

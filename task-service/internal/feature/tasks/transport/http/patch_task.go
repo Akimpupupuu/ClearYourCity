@@ -29,7 +29,7 @@ type PatchTaskResponse TaskResponseDTO
 // @Produce 	json
 // @Param 		request body PatchTaskRequest true "PatchTask request body"
 // @Param      	id path int true "ID of the patching task"
-// @Success 	200 {object} PatchTaskResponse "Succesfully patched task"
+// @Success 	200 {object} PatchTaskResponse "Successfully patched task"
 // @Failure 	400 {object} http_response.ErrorResponse "Bad request"
 // @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	404 {object} http_response.ErrorResponse "Not found"

@@ -27,7 +27,7 @@ definitions:
     type: object
   internal_feature_tasks_transport_http.CreateTaskResponse:
     properties:
-      comleted_at:
+      completed_at:
         example: "null"
         type: string
       created_at:
@@ -54,7 +54,7 @@ definitions:
     type: object
   internal_feature_tasks_transport_http.PatchStatusResponse:
     properties:
-      comleted_at:
+      completed_at:
         example: "null"
         type: string
       created_at:
@@ -94,7 +94,7 @@ definitions:
     type: object
   internal_feature_tasks_transport_http.PatchTaskResponse:
     properties:
-      comleted_at:
+      completed_at:
         example: "null"
         type: string
       created_at:
@@ -121,7 +121,7 @@ definitions:
     type: object
   internal_feature_tasks_transport_http.TaskResponseDTO:
     properties:
-      comleted_at:
+      completed_at:
         example: "null"
         type: string
       created_at:
@@ -169,7 +169,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully got list of tasks
+          description: Successfully got list of tasks
           schema:
             items:
               $ref: '#/definitions/internal_feature_tasks_transport_http.TaskResponseDTO'
@@ -206,7 +206,7 @@ paths:
       - application/json
       responses:
         "201":
-          description: Succesfully created task
+          description: Successfully created task
           schema:
             $ref: '#/definitions/internal_feature_tasks_transport_http.CreateTaskResponse'
         "400":
@@ -247,7 +247,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully patched task
+          description: Successfully patched task
           schema:
             $ref: '#/definitions/internal_feature_tasks_transport_http.PatchTaskResponse'
         "400":
@@ -293,7 +293,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: Succesfully patched task
+          description: Successfully patched task
           schema:
             $ref: '#/definitions/internal_feature_tasks_transport_http.PatchStatusResponse'
         "400":

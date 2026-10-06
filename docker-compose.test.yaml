@@ -1,0 +1,10 @@
+services:
+  image: postgres:18.4-bookworm
+  container_name: task-service-postgres
+  environment:
+    - POSTGRES_USER=${TASK_POSTGRES_USER}
+    - POSTGRES_PASSWORD=${TASK_POSTGRES_PASSWORD}
+    - POSTGRES_DB=${TASK_POSTGRES_DB}
+  ports:
+    - "5431:5432"
+    

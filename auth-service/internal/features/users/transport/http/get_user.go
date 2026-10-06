@@ -17,7 +17,7 @@ type GetUserResponse ResponseUserDTO
 // @Description Get user's data
 // @Tags 		user
 // @Produce 	json
-// @Success 	200 {object} GetUserResponse "Succesfully got user"
+// @Success 	200 {object} GetUserResponse "Successfully got user"
 // @Failure 	401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	500 {object} http_response.ErrorResponse "Internal server error"
 // @Security    Auth

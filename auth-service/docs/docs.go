@@ -32,7 +32,7 @@ const docTemplate = `{
                 "summary": "Get user",
                 "responses": {
                     "200": {
-                        "description": "Succesfully got user",
+                        "description": "Successfully got user",
                         "schema": {
                             "$ref": "#/definitions/internal_features_users_transport_http.GetUserResponse"
                         }
@@ -78,7 +78,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succesfully loged in user",
+                        "description": "Successfully loged in user",
                         "schema": {
                             "$ref": "#/definitions/internal_features_users_transport_http.LoginResponse"
                         }
@@ -119,7 +119,7 @@ const docTemplate = `{
                 "summary": "Log out user",
                 "responses": {
                     "204": {
-                        "description": "Succesfully loged out user"
+                        "description": "Successfully loged out user"
                     },
                     "401": {
                         "description": "Unauthorized",
@@ -164,7 +164,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "204": {
-                        "description": "Succesfully patched user's password"
+                        "description": "Successfully patched user's password"
                     },
                     "400": {
                         "description": "Bad request",
@@ -224,7 +224,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Succesfully patched user",
+                        "description": "Successfully patched user",
                         "schema": {
                             "$ref": "#/definitions/internal_features_users_transport_http.PatchUserResponse"
                         }
@@ -268,7 +268,7 @@ const docTemplate = `{
                 "summary": "Refresh token",
                 "responses": {
                     "200": {
-                        "description": "Succesfully refreshed token",
+                        "description": "Successfully refreshed token",
                         "schema": {
                             "$ref": "#/definitions/internal_features_users_transport_http.RefreshTokenResponse"
                         }
@@ -320,7 +320,7 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "201": {
-                        "description": "Succesfully registered user",
+                        "description": "Successfully registered user",
                         "schema": {
                             "$ref": "#/definitions/internal_features_users_transport_http.RegisterResponse"
                         }

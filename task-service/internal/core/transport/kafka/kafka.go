@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	core_errors "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/errors"
+	core_logger "github.com/Akimpupupuu/ClearYourCity/task-service/internal/core/logger"
 	"github.com/segmentio/kafka-go"
 )
 
@@ -13,7 +14,7 @@ type Producer struct {
 	writer *kafka.Writer
 }
 
-func NewProducer(ctx context.Context, config Config) (*Producer, error) {
+func NewProducer(ctx context.Context, config Config, logger core_logger.Logger) (*Producer, error) {
 	if len(config.Brokers) == 0 {
 		return nil, fmt.Errorf("no brokers provided: %w", core_errors.ErrInvalidArgument)
 	}
@@ -32,7 +33,11 @@ func NewProducer(ctx context.Context, config Config) (*Producer, error) {
 	if err != nil {
 		return nil, fmt.Errorf("create a dial connection to any kafka broker: %w", err)
 	}
-	defer conn.Close()
+	defer func() {
+		if err := conn.Close(); err != nil {
+			logger.Error("close connection", core_logger.Err(err))
+		}
+	}()
 
 	for _, topic := range config.Topics {
 		if topic == "" {

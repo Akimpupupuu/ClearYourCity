@@ -17,7 +17,7 @@ type RefreshTokenResponse ResponseLoginDTO
 // @Description  Refresh authorization token
 // @Tags 		 user
 // @Produce 	 json
-// @Success 	 200 {object} RefreshTokenResponse "Succesfully refreshed token"
+// @Success 	 200 {object} RefreshTokenResponse "Successfully refreshed token"
 // @Failure 	 401 {object} http_response.ErrorResponse "Unauthorized"
 // @Failure 	 404 {object} http_response.ErrorResponse "Not found"
 // @Failure 	 500 {object} http_response.ErrorResponse "Internal server error"

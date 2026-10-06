@@ -23,7 +23,7 @@ func NewTransactionManager(pool *pgxpool.Pool) *transactionManager {
 func (tm *transactionManager) WithTransaction(ctx context.Context, fn func(ctx context.Context) error) error {
 	tx, err := tm.pool.Begin(ctx)
 	if err != nil {
-		return fmt.Errorf("begin transation: %w", err)
+		return fmt.Errorf("begin transaction: %w", err)
 	}
 
 	defer func() {
